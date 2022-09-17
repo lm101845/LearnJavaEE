@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.atguigu.maven</groupId>
+    <artifactId>pro02-maven-idea-parent</artifactId>
+
+    <!-- IDEA 自动将 packaging 配置为 pom -->
+    <packaging>pom</packaging>
+
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>pro03-module-java</module>
+        <module>pro04-module-web</module>
+        <module>pro05-module-properties</module>
+        <module>pro06-module-a</module>
+        <module>pro07-module-b</module>
+        <module>pro08-module-c</module>
+        <module>pro09-module-d</module>
+        <module>pro10-module-x</module>
+        <module>pro11-module-y</module>
+        <module>pro12-module-z</module>
+        <module>pro13-module-use-my-plugin</module>
+        <module>pro14-module-profile</module>
+        <module>pro15-module-use-outer</module>
+    </modules>
+
+</project>
