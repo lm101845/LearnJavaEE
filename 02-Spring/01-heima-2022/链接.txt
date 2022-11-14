@@ -1,0 +1,16 @@
+黑马《2022最新SSM框架教程》
+在线学习：
+https://m.bilibili.com/video/BV1Fi4y1S7ix
+
+【配套资料领取】
+百度网盘：
+链接：https://pan.baidu.com/s/1eEOe5SRq1iTb1D8NKQPIfQ
+提取码：1234 
+
+阿里云盘：
+链接：https://www.aliyundrive.com/s/zUajYrxS9rj
+
+2022年9月13日算是正式开始学习JavaEE了,先花20个小时看完黑马的这套视频，然后再说吧。
+
+day01第0-5集看完——22-09-23
+day01第6-10集看完——22-11-14
