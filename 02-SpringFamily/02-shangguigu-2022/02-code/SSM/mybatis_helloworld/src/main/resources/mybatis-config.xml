@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--配置连接数据库的环境-->
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <!--事物管理器，类型是JDBC-->
+            <dataSource type="POOLED">
+                <!--数据源:帮助我们管理数据库的连接,如德鲁伊-->
+                <!--之前我们获取连接的时候就需要这4个参数：数据库驱动，url地址，用户名，密码-->
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://localhost:3306/ssm?serverTimezone=UTC"/>
+                <property name="username" value="root"/>
+                <property name="password" value="123456"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!--引入mybatis的映射文件-->
+    <!--映射文件中，我们才写SQL语句-->
+    <mappers>
+        <mapper resource="mappers/UserMapper.xml"/>
+    </mappers>
+</configuration>
