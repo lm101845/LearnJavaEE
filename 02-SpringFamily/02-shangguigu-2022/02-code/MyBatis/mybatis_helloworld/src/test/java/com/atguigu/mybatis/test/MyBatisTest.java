@@ -47,4 +47,38 @@ public class MyBatisTest {
         //关闭SqlSession
         sqlSession.close();
     }
+
+    @Test
+    public void testUpdate(){
+        SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+        mapper.updateUser();
+        sqlSession.close();  //用完记得关
+    }
+
+    @Test
+    public void testDelete(){
+        SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+        mapper.deleteUser();
+        sqlSession.close();  //用完记得关
+    }
+
+    @Test
+    public void testGetUserById(){
+        SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+        User user = mapper.getUserById();
+        System.out.println(user);
+        sqlSession.close();  //用完记得关
+    }
+
+    @Test
+    public void testGetAllUser(){
+        SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+        List<User> list = mapper.getAllUser();
+        list.forEach(System.out::println);
+        sqlSession.close();  //用完记得关
+    }
 }

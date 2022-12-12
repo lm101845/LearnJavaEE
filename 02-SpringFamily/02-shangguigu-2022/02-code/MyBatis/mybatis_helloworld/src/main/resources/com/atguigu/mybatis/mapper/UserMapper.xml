@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mybatis.mapper.UserMapper">
+    <!--此时Mapper接口就和映射文件对应上了-->
+    <!--映射文件里面主要写的就是SQL语句-->
+    <!--
+        mapper接口和映射文件要保持一致：
+        1.mapper接口的全类名和映射文件的namespace一致
+        2.mapper接口中的方法要和映射文件中的sql的id保持一致
+    -->
+    <!--int insertUser()-->
+    <!--插入功能用insert标签-->
+    <insert id="insertUser">
+        insert into t_user values(null,'admin','123456',29,'男','1018457683@qq.com')
+    </insert>
+
+    <!--void updateUser()-->
+    <!--修改功能用update标签-->
+    <!--刚开始还没学别的内容，所以SQL值我们先写死,以后我们写成动态的-->
+    <update id="updateUser">
+        update t_user set username = 'root',password = '123' where id = 2
+    </update>
+
+    <!--void deleteUser();-->
+    <delete id="deleteUser">
+        delete from t_user where id = 2
+    </delete>
+
+    <!-- User getUserById();-->
+    <!--resultType:设置结果类型，即查询的数据要转换为的Java类型-->
+    <!--resultMap:自定义映射，处理多对一或一对多的映射关系-->
+    <!--使用别名abc来替代全类名com.atguigu.mybatis.pojo.User-->
+    <!--<select id="getUserById" resultType="com.atguigu.mybatis.pojo.User">-->
+    <!--<select id="getUserById" resultType="abc">-->
+    <select id="getUserById" resultType="User">
+        select * from t_user where id = 1
+    </select>
+
+    <!--List<User> getAllUser();-->
+    <!--<select id="getAllUser" resultType="com.atguigu.mybatis.pojo.User">-->
+    <!--<select id="getAllUser" resultType="abc">-->
+    <select id="getAllUser" resultType="User">
+        select * from t_user
+    </select>
+</mapper>

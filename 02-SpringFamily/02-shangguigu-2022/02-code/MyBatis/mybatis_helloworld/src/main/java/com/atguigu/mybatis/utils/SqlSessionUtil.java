@@ -1,10 +1,5 @@
 package com.atguigu.mybatis.utils;
 
-/**
- * @Author liming
- * @Date 2022/11/29 7:47
- **/
-
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -13,24 +8,28 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class SqlSessionUtil {
+/**
+ * @Author liming
+ * @Date 2022/11/29 12:21
+ **/
 
+public class SqlSessionUtil {
     public static SqlSession getSqlSession(){
         SqlSession sqlSession = null;
+        //1.获取核心配置文件的输入流
         try {
-            //获取核心配置文件的输入流
             InputStream is = Resources.getResourceAsStream("mybatis-config.xml");
-            //获取SqlSessionFactoryBuilder
+            //2.获取SqlSessionFactoryBuilder对象
             SqlSessionFactoryBuilder sqlSessionFactoryBuilder = new SqlSessionFactoryBuilder();
-            //获取SqlSessionFactory
+            //3.获取sqlSessionFactory对象
             SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBuilder.build(is);
-            //获取SqlSession对象
-            sqlSession = sqlSessionFactory.openSession(true);
+            //4.获取sqlSession对象
+            sqlSession = sqlSessionFactory.openSession(true);  //加true就会自动提交事物
+
         } catch (IOException e) {
             e.printStackTrace();
         }
         return sqlSession;
     }
-
 }
 
