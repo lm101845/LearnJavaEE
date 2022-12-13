@@ -3,5 +3,27 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.atguigu.mybatis.mapper.UserMapper">
+    <!--User getUserByUserName(String username);-->
+    <select id="getUserByUserName" resultType="User">
+        select  * from t_user where username = #{username}
+         <!-- select  * from t_user where username = #{asdfksdjkl}-->
+         <!-- 这里面可以随便写，可以写username,也可以瞎写,但是最好见名知意-->
+         <!--  #{}本质占位符写法，推荐这样写-->
+         <!-- select  * from t_user where username = '${username}'-->
+         <!--  ${}本质是字符串拼接写法，不建议这样写，会引起SQL注入，而且写法繁琐-->
+         <!--  而且这种写法需要手动添加单引号-->
 
+    </select>
+
+    <!--User checkLogin(String username,String password);-->
+    <select id="checkLogin" resultType="User">
+    <!--写法1： select * from t_user where username = #{arg0} and password = #{arg1}-->
+    <!--写法2：-->
+    select * from t_user where username = #{param1} and password = #{param2}
+    </select>
+
+    <!--User checkLoginByMap(Map<String,Object> map);-->
+    <select id="checkLoginByMap" resultType="User">
+        select * from t_user where username = #{username} and password = #{password}
+    </select>
 </mapper>
