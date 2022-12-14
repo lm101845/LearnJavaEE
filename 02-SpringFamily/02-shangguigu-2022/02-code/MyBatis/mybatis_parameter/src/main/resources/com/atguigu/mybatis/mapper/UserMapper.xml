@@ -26,4 +26,14 @@
     <select id="checkLoginByMap" resultType="User">
         select * from t_user where username = #{username} and password = #{password}
     </select>
+
+    <!--void insertUser(User user);-->
+    <insert id="insertUser">
+        insert into t_user values(null, #{username},#{password},#{age},#{gender},#{email})
+    </insert>
+
+    <!--User checkLoginByParam(@Param("username") String username, @Param("password") String password);-->
+    <select id="checkLoginByParam" resultType="User">
+        select * from t_user where username = #{username} and password = #{password}
+    </select>
 </mapper>

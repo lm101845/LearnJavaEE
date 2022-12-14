@@ -40,4 +40,20 @@ public class ParameterTest {
         User user = mapper.checkLoginByMap(map);
         System.out.println(user);
     }
+
+    @Test
+    public void testInsertUser(){
+        SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+        User user = new User(null,"root","123456",33,"女","123@qq.com");
+        mapper.insertUser(user);
+    }
+
+    @Test
+    public void testCheckLoginByParam(){
+        SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+        User user = mapper.checkLoginByParam("admin","123456");
+        System.out.println(user);
+    }
 }

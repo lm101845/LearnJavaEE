@@ -44,4 +44,7 @@
     <select id="getAllUser" resultType="User">
         select * from t_user
     </select>
+
+
+
 </mapper>
