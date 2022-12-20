@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mybatis.mapper.SpecialSQLMapper">
+    <!--List<User> getUserByLike( @Param("mohu") String mohu);-->
+
+    <!---->
+    <select id="getUserByLike" resultType="User">
+        <!--这种写法不行-->
+        <!--select * from t_user where username like '%#{mohu}%'-->
+
+        <!--写法1：-->
+        <!--select * from t_user where username like '%${mohu}%'-->
+
+        <!--写法2：这种写法很麻烦啊-->
+        <!--select * from t_user where username like concat('%',#{mohu},'%')-->
+
+        <!--写法3：用的最多的方式-->
+        select * from t_user where username like "%"#{mohu}"%"
+    </select>
+</mapper>
