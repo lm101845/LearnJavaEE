@@ -4,8 +4,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.atguigu.mybatis.mapper.SpecialSQLMapper">
     <!--List<User> getUserByLike( @Param("mohu") String mohu);-->
-
-    <!---->
     <select id="getUserByLike" resultType="User">
         <!--这种写法不行-->
         <!--select * from t_user where username like '%#{mohu}%'-->
@@ -19,4 +17,31 @@
         <!--写法3：用的最多的方式-->
         select * from t_user where username like "%"#{mohu}"%"
     </select>
+
+    <!--void deleteMoreUser(@Param("ids") String ids);   //ids:9,10-->
+    <delete id="deleteMoreUser">
+        <!--delete from t_user where id in(#{ids})-->
+        delete from t_user where id in(${ids})
+    </delete>
+
+    <!--List<User> getUserList(@Param("tableName") String tableName);-->
+    <select id="getUserList" resultType="User">
+        <!--select * from #{tableName} -->
+        <!--这样写不行，#{}解析之后，会给表名加上单引号，所以我们只能使用${}-->
+        select * from ${tableName}
+    </select>
+
+    <!--void insertUser(User user);-->
+    <!--
+        useGeneratedKeys：表示当前添加功能使用了自增的主键
+        keyProperty：将添加的数据的自增主键为实体类类型的参数的属性赋值
+        问：为什么不用增删改方法的返回值呢？
+        答：因为增删改方法的返回值是固定的，为int类型，表示受影响的行数
+    -->
+    <!--我们要在执行完这个方法之后，获取到这个自增的id-->
+    <!--获取自增的主键：这个用的特别多！！！-->
+    <!--如果不设置一下，你新增完之后，控制台打印的id为null-->
+    <insert id="insertUser" useGeneratedKeys="true" keyProperty="id">
+        insert into t_user values(null,#{username},#{password},#{age},#{gender},#{email})
+    </insert>
 </mapper>

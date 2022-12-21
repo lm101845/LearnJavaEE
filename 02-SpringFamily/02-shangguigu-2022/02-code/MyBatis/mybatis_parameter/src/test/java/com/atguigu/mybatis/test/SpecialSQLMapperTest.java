@@ -22,6 +22,32 @@ public class SpecialSQLMapperTest {
         list.forEach(System.out::println);
     }
 
+    @Test
+    public void testDeleteMoreUser(){
+        SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+        SpecialSQLMapper mapper = sqlSession.getMapper(SpecialSQLMapper.class);
+        mapper.deleteMoreUser("9,10");
+        //会报错，因为#{}本质是占位符,它会自动给我们赋的值外面加上单引号，最后会变成xxx in('9,10'),这个语句是错误的
+        //我们用${}就没有问题了(${}是不加引号的字面量表达式)
+    }
+
+    @Test
+    public void testGetUserList(){
+        SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+        SpecialSQLMapper mapper = sqlSession.getMapper(SpecialSQLMapper.class);
+        List<User> list = mapper.getUserList("t_user");
+        list.forEach(System.out::println);
+    }
+
+    @Test
+    public void testInsertUser(){
+        SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+        SpecialSQLMapper mapper = sqlSession.getMapper(SpecialSQLMapper.class);
+        User user = new User(null,"xiaoming","123456",35,"男","xiaoming@qq.com");
+        mapper.insertUser(user);
+        System.out.println(user);
+    }
+
     public void testJDBC(){
         try {
             Class.forName("");
