@@ -104,4 +104,34 @@
                            on t_emp.dept_id = t_dept.dept_id
         where t_emp.emp_id = #{empId}
     </select>
+
+    <!--Emp getEmpAndDeptByStepOne(@Param("empId")Integer empId);-->
+    <resultMap id="empAndDeptByStepResultMap" type="Emp">
+        <id column="emp_id" property="empId"></id>
+        <result column="emp_name" property="empName"></result>
+        <result column="age" property="age"></result>
+        <result column="gender" property="gender"></result>
+        <!--
+            property:设置需要处理映射关系的属性的属性名
+            select:设置分步查询的sql的唯一标识
+            column:将查询出的某个字段作为分步查询的sql的条件
+            fetchType:在开启了延迟加载的环境中，通过该属性设置当前的分步查询，是否使用延迟加载
+            fetchType:"eager(立即加载)|lazy(延迟加载)"
+        -->
+        <association
+                property="dept"
+                fetchType="eager"
+                select="com.atguigu.mybatis.mapper.DeptMapper.getEmpAndDeptByStepTwo"
+                column="dept_id">
+
+        </association>
+    </resultMap>
+    <select id="getEmpAndDeptByStepOne" resultMap="empAndDeptByStepResultMap">
+        select * from t_emp where emp_id = #{empId}
+    </select>
+
+    <!--List<Emp> getDeptAndEmpByStepTwo(@Param("deptId")Integer deptId);-->
+    <select id="getDeptAndEmpByStepTwo" resultType="Emp">
+        select * from t_emp where dept_id = #{deptId}
+    </select>
 </mapper>
