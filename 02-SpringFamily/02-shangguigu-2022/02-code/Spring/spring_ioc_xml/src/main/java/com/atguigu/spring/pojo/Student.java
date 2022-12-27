@@ -1,23 +1,35 @@
 package com.atguigu.spring.pojo;
 
+import java.util.Arrays;
+
 /**
  * @Author liming
  * @Date 2022/12/24 23:07
  **/
-public class Student {
+public class Student implements Person{
     private Integer sid;
     private String sname;
     private Integer age;
     private String gender;
+    private double score;
+    private Clazz clazz;
+    private String[] hobby;
 
     //通过反射创建实例对象，大部分都是用的无参构造
     public Student() {
     }
-    public Student(Integer sid, String sname, Integer age, String gender) {
+    public Student(Integer sid, String sname, String gender,Integer age) {
         this.sid = sid;
         this.sname = sname;
-        this.age = age;
         this.gender = gender;
+        this.age = age;
+    }
+
+    public Student(Integer sid, String sname, String gender, double score) {
+        this.sid = sid;
+        this.sname = sname;
+        this.gender = gender;
+        this.score = score;
     }
 
     public Integer getSid() {
@@ -52,6 +64,30 @@ public class Student {
         this.gender = gender;
     }
 
+    public double getScore() {
+        return score;
+    }
+
+    public void setScore(double score) {
+        this.score = score;
+    }
+
+    public Clazz getClazz() {
+        return clazz;
+    }
+
+    public void setClazz(Clazz clazz) {
+        this.clazz = clazz;
+    }
+
+    public String[] getHobby() {
+        return hobby;
+    }
+
+    public void setHobby(String[] hobby) {
+        this.hobby = hobby;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
@@ -59,6 +95,9 @@ public class Student {
                 ", sname='" + sname + '\'' +
                 ", age=" + age +
                 ", gender='" + gender + '\'' +
+                ", score=" + score +
+                ", clazz=" + clazz +
+                ", hobby=" + Arrays.toString(hobby) +
                 '}';
     }
 }
