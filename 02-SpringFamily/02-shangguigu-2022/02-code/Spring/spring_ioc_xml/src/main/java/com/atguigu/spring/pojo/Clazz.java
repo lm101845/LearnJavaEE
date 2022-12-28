@@ -1,5 +1,7 @@
 package com.atguigu.spring.pojo;
 
+import java.util.List;
+
 /**
  * @Author liming
  * @Date 2022/12/27 21:15
@@ -7,6 +9,8 @@ package com.atguigu.spring.pojo;
 public class Clazz {
     private Integer cid;
     private String cname;
+    private List<Student> students;
+    //对一对应对象，对多对应集合
 
     public Clazz() {
     }
@@ -32,11 +36,20 @@ public class Clazz {
         this.cname = cname;
     }
 
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
+
     @Override
     public String toString() {
         return "Clazz{" +
                 "cid=" + cid +
                 ", cname='" + cname + '\'' +
+                ", students=" + students +
                 '}';
     }
 }

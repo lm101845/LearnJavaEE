@@ -1,6 +1,7 @@
 package com.atguigu.spring.pojo;
 
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  * @Author liming
@@ -12,8 +13,9 @@ public class Student implements Person{
     private Integer age;
     private String gender;
     private double score;
-    private Clazz clazz;
     private String[] hobby;
+    private Clazz clazz;
+    private Map<String,Teacher> teacherMap;
 
     //通过反射创建实例对象，大部分都是用的无参构造
     public Student() {
@@ -88,6 +90,14 @@ public class Student implements Person{
         this.hobby = hobby;
     }
 
+    public Map<String, Teacher> getTeacherMap() {
+        return teacherMap;
+    }
+
+    public void setTeacherMap(Map<String, Teacher> teacherMap) {
+        this.teacherMap = teacherMap;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
@@ -96,8 +106,9 @@ public class Student implements Person{
                 ", age=" + age +
                 ", gender='" + gender + '\'' +
                 ", score=" + score +
-                ", clazz=" + clazz +
                 ", hobby=" + Arrays.toString(hobby) +
+                ", clazz=" + clazz +
+                ", teacherMap=" + teacherMap +
                 '}';
     }
 }

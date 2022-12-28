@@ -19,7 +19,8 @@ public class IOCByXMLTest {
         //Student student = ioc.getBean("studentTwo", Student.class);
         //Student student = ioc.getBean("studentThree", Student.class);
         //Student student = ioc.getBean("studentFour", Student.class);
-        Student student = ioc.getBean("studentFive", Student.class);
+        //Student student = ioc.getBean("studentFive", Student.class);
+        Student student = ioc.getBean("studentSix", Student.class);
         //System.out.println(student.getGender().toString());
         //如果是String,则不会报错，如果是null,是空指针，报错。
         System.out.println(student);
@@ -27,6 +28,9 @@ public class IOCByXMLTest {
         //Clazz clazz = ioc.getBean("clazzInner", Clazz.class);
         //System.out.println(clazz);
         //报错：NoSuchBeanDefinitionException，内部bean无法通过IOC容器直接获取，只能在内部使用
+
+        //Clazz clazz = ioc.getBean("clazzOne", Clazz.class);
+        //System.out.println(clazz);
     }
 
     /**

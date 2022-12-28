@@ -1,83 +1,127 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-        <bean id="studentOne" class="com.atguigu.spring.pojo.Student"></bean>
-        <!--IOC容器中有且只有一个类型匹配的bean-->
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
+    <bean id="studentOne" class="com.atguigu.spring.pojo.Student"></bean>
+    <!--IOC容器中有且只有一个类型匹配的bean-->
+    <!--
+    依赖注入的第一种方式：set注入
+    你不需要给所有的属性赋值，你想给谁赋值就给谁赋值，没有赋值的默认是null
+    -->
+    <bean id="studentTwo" class="com.atguigu.spring.pojo.Student">
         <!--
-        依赖注入的第一种方式：set注入
-        你不需要给所有的属性赋值，你想给谁赋值就给谁赋值，没有赋值的默认是null
+            property：通过成员变量的set方法进行赋值
+            name：设置需要赋值的属性名（和set方法有关）
+            value：设置为属性所赋的值(它是专门给【字面量】属性赋值的)
         -->
-        <bean id="studentTwo" class="com.atguigu.spring.pojo.Student">
-                <!--
-                    property：通过成员变量的set方法进行赋值
-                    name：设置需要赋值的属性名（和set方法有关）
-                    value：设置为属性所赋的值(它是专门给【字面量】属性赋值的)
-                -->
-                <property name="sid" value="1001"></property>
-                <property name="sname" value="孙悟空"></property>
-                <property name="age" value="520"></property>
-                <property name="gender" value="男"></property>
-        </bean>
+        <property name="sid" value="1001"></property>
+        <property name="sname" value="孙悟空"></property>
+        <property name="age" value="520"></property>
+        <property name="gender" value="男"></property>
+    </bean>
 
-        <bean id="studentThree" class="com.atguigu.spring.pojo.Student">
-                <constructor-arg value="1002"></constructor-arg>
-                <constructor-arg value="猪八戒"></constructor-arg>
-                <constructor-arg value="男"></constructor-arg>
-                <constructor-arg value="320" name="age"></constructor-arg>
-        </bean>
+    <bean id="studentThree" class="com.atguigu.spring.pojo.Student">
+        <constructor-arg value="1002"></constructor-arg>
+        <constructor-arg value="猪八戒"></constructor-arg>
+        <constructor-arg value="男"></constructor-arg>
+        <constructor-arg value="320" name="age"></constructor-arg>
+    </bean>
 
-        <bean id="studentFour" class="com.atguigu.spring.pojo.Student">
-                <property name="sid" value="1003"></property>
-                <!--<property name="sname" value="<沙悟净>"></property>-->
-                <!--特殊字符的处理，比如<要用&lt;进行代替-->
-                <!--
-                    <：&lt;
-                    >：&gt;
-                    CDATA节其中的内容会原样解析<![CDATA[...]]>
-                    CDATA节是xml中一个特殊的标签，因此不能写在一个属性中
-                -->
-                <!--<property name="sname" value="&lt;沙悟净&gt;"></property>-->
-                <property name="sname">
-                        <value><![CDATA[<王五>]]></value>
-                </property>
-                <!--<property name="gender" value="null"></property>-->
-                <!--这样写是字符串，不对-->
-                <property name="gender">
-                        <null/>
-                </property>
-        </bean>
+    <bean id="studentFour" class="com.atguigu.spring.pojo.Student">
+        <property name="sid" value="1003"></property>
+        <!--<property name="sname" value="<沙悟净>"></property>-->
+        <!--特殊字符的处理，比如<要用&lt;进行代替-->
+        <!--
+            <：&lt;
+            >：&gt;
+            CDATA节其中的内容会原样解析<![CDATA[...]]>
+            CDATA节是xml中一个特殊的标签，因此不能写在一个属性中
+        -->
+        <!--<property name="sname" value="&lt;沙悟净&gt;"></property>-->
+        <property name="sname">
+            <value><![CDATA[<王五>]]></value>
+        </property>
+        <!--<property name="gender" value="null"></property>-->
+        <!--这样写是字符串，不对-->
+        <property name="gender">
+            <null/>
+        </property>
+    </bean>
 
-        <bean id="studentFive" class="com.atguigu.spring.pojo.Student">
-                <property name="sid" value="1004"></property>
-                <property name="sname" value="唐僧"></property>
-                <property name="age" value="35"></property>
-                <property name="gender" value="男"></property>
-                <!--ref：引用IOC容器中的某个bean的id-->
-                <!--<property name="clazz" ref="clazzOne"></property>-->
-                <!--级联的方式，要保证提前为clazz属性赋值或者实例化(用的不多，因为麻烦)-->
-                <!--<property name="clazz.cid" value="2222"></property>-->
-                <!--<property name="clazz.cname" value="远大前程班"></property>-->
-                <!--value只能给字面量赋值,而clazz是对象，不能使用value-->
-                <property name="clazz">
-                        <!--内部bean，只能在当前bean的内部使用，不能直接通过IOC容器获取-->
-                        <bean id="clazzInner" class="com.atguigu.spring.pojo.Clazz">
-                                <property name="cid" value="3333"></property>
-                                <property name="cname" value="未来可期班"></property>
-                        </bean>
-                </property>
-                <property name="hobby">
-                        <array>
-                                <value>抽烟</value>
-                                <value>喝酒</value>
-                                <value>烫头</value>
-                        </array>
-                <!--array标签专门为数组类型的属性进行赋值的-->
-                </property>
-        </bean>
+    <bean id="studentFive" class="com.atguigu.spring.pojo.Student">
+        <property name="sid" value="1004"></property>
+        <property name="sname" value="唐僧"></property>
+        <property name="age" value="35"></property>
+        <property name="gender" value="男"></property>
+        <!--ref：引用IOC容器中的某个bean的id-->
+        <!--<property name="clazz" ref="clazzOne"></property>-->
+        <!--级联的方式，要保证提前为clazz属性赋值或者实例化(用的不多，因为麻烦)-->
+        <!--<property name="clazz.cid" value="2222"></property>-->
+        <!--<property name="clazz.cname" value="远大前程班"></property>-->
+        <!--value只能给字面量赋值,而clazz是对象，不能使用value-->
+        <property name="clazz">
+            <!--内部bean，只能在当前bean的内部使用，不能直接通过IOC容器获取-->
+            <bean id="clazzInner" class="com.atguigu.spring.pojo.Clazz">
+                <property name="cid" value="3333"></property>
+                <property name="cname" value="未来可期班"></property>
+            </bean>
+        </property>
+        <property name="hobby">
+            <array>
+                <value>抽烟</value>
+                <value>喝酒</value>
+                <value>烫头</value>
+            </array>
+            <!--array标签专门为数组类型的属性进行赋值的-->
+        </property>
+        <!--<property name="teacherMap">-->
+        <!--    <map>-->
+        <!--        <entry key="10086" value-ref="teacherOne"></entry>-->
+        <!--        <entry key="10010" value-ref="teacherTwo"></entry>-->
+        <!--        &lt;!&ndash;一个entry可以表示Map中的一个键值对&ndash;&gt;-->
+        <!--        &lt;!&ndash;键如果是字面量类型就用key,如果是非字面量类型就用key-ref,value同理&ndash;&gt;-->
+        <!--    </map>-->
+        <!--</property>-->
 
-        <bean id="clazzOne" class="com.atguigu.spring.pojo.Clazz">
-                <property name="cid" value="1111"></property>
-                <property name="cname" value="最强王者班"></property>
-        </bean>
+        <property name="teacherMap" ref="teacherMap"></property>
+    </bean>
+
+    <bean id="clazzOne" class="com.atguigu.spring.pojo.Clazz">
+        <property name="cid" value="1111"></property>
+        <property name="cname" value="最强王者班"></property>
+        <!--写法1：-->
+        <!--<property name="students">-->
+        <!--    <list>-->
+        <!--        <ref bean="studentOne"></ref>-->
+        <!--        <ref bean="studentTwo"></ref>-->
+        <!--        <ref bean="studentThree"></ref>-->
+        <!--    </list>-->
+        <!--</property>-->
+        <!--写法2：-->
+        <property name="students" ref="studentList"></property>
+    </bean>
+    <bean id="teacherOne" class="com.atguigu.spring.pojo.Teacher">
+        <property name="tid" value="10086"></property>
+        <property name="tname" value="庄子"></property>
+    </bean>
+    <bean id="teacherTwo" class="com.atguigu.spring.pojo.Teacher">
+        <property name="tid" value="10010"></property>
+        <property name="tname" value="孔子"></property>
+    </bean>
+    <!--配置一个集合类型的bean,需要使用util的约束-->
+    <!--给前面加上前缀，防止命名冲突，类似命名空间的功能-->
+    <util:list id="studentList">
+        <ref bean="studentOne"></ref>
+        <ref bean="studentTwo"></ref>
+        <ref bean="studentThree"></ref>
+    </util:list>
+
+    <util:map id="teacherMap">
+        <entry key="10086" value-ref="teacherOne"></entry>
+        <entry key="10010" value-ref="teacherTwo"></entry>
+    </util:map>
+
+    <bean id="studentSix" class="com.atguigu.spring.pojo.Student"
+          p:sid="1005" p:sname="小明" p:teacherMap-ref="teacherMap"></bean>
 </beans>
