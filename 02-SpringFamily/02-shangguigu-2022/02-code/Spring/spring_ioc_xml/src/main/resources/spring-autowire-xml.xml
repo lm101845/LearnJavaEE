@@ -4,11 +4,23 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
        <!--Java的三层架构的三个组件都交给IOC进行管理-->
        <!--class里面一定要写具体的类，不能写接口-->
-       <bean id="userController" class="com.atguigu.spring.controller.UserController">
-           <property name="userService" ref="userService"></property>
+       <!-- 一般都用byType，只有它不行了，我们才用byName-->
+       <!--<bean id="userController" class="com.atguigu.spring.controller.UserController" autowire="byType">-->
+       <bean id="userController" class="com.atguigu.spring.controller.UserController" autowire="byName">
+           <!--使用自动装配，就可以不用写属性了-->
+           <!--<property name="userService" ref="userService"></property>-->
        </bean>
-       <bean id="userService" class="com.atguigu.spring.service.impl.UserServiceImpl">
-           <property name="userDao" ref="userDao"></property>
+       <!--<bean id="userService" class="com.atguigu.spring.service.impl.UserServiceImpl" autowire="byType">-->
+       <bean id="userService" class="com.atguigu.spring.service.impl.UserServiceImpl" autowire="byName">
+           <!--使用自动装配，就可以不用写属性了-->
+           <!--<property name="userDao" ref="userDao"></property>-->
        </bean>
+
+        <!--<bean id="userService" class="com.atguigu.spring.service.impl.UserServiceImpl" autowire="byName">-->
+        <!--    &lt;!&ndash;使用自动装配，就可以不用写属性了&ndash;&gt;-->
+        <!--    &lt;!&ndash;<property name="userDao" ref="userDao"></property>&ndash;&gt;-->
+        <!--</bean>-->
+
        <bean id="userDao" class="com.atguigu.spring.dao.impl.UserDaoImpl"></bean>
+       <bean id="dao" class="com.atguigu.spring.dao.impl.UserDaoImpl"></bean>
 </beans>

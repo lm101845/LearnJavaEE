@@ -1444,9 +1444,7 @@ Spring 为了知道程序员在哪些地方标记了什么注解，就需要通�
 
 通过查看源码我们得知，@Controller、@Service、@Repository这三个注解只是在@Component注解的基础上起了三个新的名字。
 
-对于Spring使用IOC容器管理这些组件来说没有区别。所以@Controller、@Service、@Repository这
-
-三个注解只是给开发人员看的，让我们能够便于分辨组件的作用。
+对于Spring使用IOC容器管理这些组件来说没有区别。所以@Controller、@Service、@Repository这三个注解只是给开发人员看的，让我们能够便于分辨组件的作用。
 
 注意：虽然它们本质上一样，但是为了代码的可读性，为了程序结构严谨我们肯定不能随便胡乱标记。
 
