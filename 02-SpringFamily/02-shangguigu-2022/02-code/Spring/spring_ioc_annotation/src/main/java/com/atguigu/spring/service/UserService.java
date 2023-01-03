@@ -5,4 +5,8 @@ package com.atguigu.spring.service;
  * @Date 2023/1/1 15:50
  **/
 public interface UserService {
+    /**
+     * 保存用户信息
+     */
+    void saveUser();
 }

@@ -3,6 +3,7 @@ package com.auguigu.spring.test;
 import com.atguigu.spring.controller.UserController;
 import com.atguigu.spring.dao.UserDao;
 import com.atguigu.spring.service.UserService;
+import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -38,16 +39,16 @@ public class IOCByAnnotationTest {
      * 在@Autowired注解中有个属性required，默认值为true，要求必须完成自动装配
      * 可以将required设置为false，此时能装配则装配，无法装配则使用属性的默认值
      */
-    @org.junit.Test
+    @Test
     public void test(){
         ApplicationContext ioc = new ClassPathXmlApplicationContext("spring-ioc-annotation.xml");
-        UserController controller = ioc.getBean(UserController.class);
-        System.out.println(controller);
-
-        UserService userService = ioc.getBean(UserService.class);
-        System.out.println(userService);
-
-        UserDao userDao = ioc.getBean(UserDao.class);
-        System.out.println(userDao);
+        //UserController userController = ioc.getBean("userController",UserController.class);
+        UserController userController = ioc.getBean("controller",UserController.class);
+        System.out.println(userController);
+        userController.saveUser();
+        //UserService userService = ioc.getBean("userServiceImpl",UserService.class);
+        //System.out.println(userService);
+        //UserDao userDao = ioc.getBean("userDaoImpl",UserDao.class);
+        //System.out.println(userDao);
     }
 }
