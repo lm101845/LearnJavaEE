@@ -2490,9 +2490,7 @@ try {
 
 - 好处1：提高开发效率
 - 好处2：消除了冗余的代码
-- 好处3：框架会综合考虑相关领域中在实际开发环境下有可能遇到的各种问题，进行了健壮性、性
-
-能等各个方面的优化
+- 好处3：框架会综合考虑相关领域中在实际开发环境下有可能遇到的各种问题，进行了健壮性、性能等各个方面的优化
 
 所以，我们可以总结下面两个概念：
 
@@ -2748,9 +2746,9 @@ public class TxByAnnotationTest {
 
 ### 4.3.4、@Transactional注解标识的位置
 
-@Transactional标识在方法上，咋只会影响该方法
+@Transactional标识在方法上，则只会影响该方法
 
-@Transactional标识的类上，咋会影响类中所有的方法
+@Transactional标识的类上，则会影响类中所有的方法
 
 ### 4.3.5、事务属性：只读
 
@@ -2777,9 +2775,7 @@ public void buyBook(Integer bookId, Integer userId) {
 
 对增删改操作设置只读会抛出下面异常：
 
-Caused by: java.sql.SQLException: Connection is read-only. Queries leading to data modification
-
-are not allowed
+Caused by: java.sql.SQLException: Connection is read-only. Queries leading to data modification are not allowed
 
 ### 4.3.6、事务属性：超时
 
