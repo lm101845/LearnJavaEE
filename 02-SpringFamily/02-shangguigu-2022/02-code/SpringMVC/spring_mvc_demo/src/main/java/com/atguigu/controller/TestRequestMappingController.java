@@ -1,7 +1,8 @@
 package com.atguigu.controller;
 
+import com.atguigu.pojo.User;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Author liming
@@ -52,10 +53,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 //@RequestMapping("/test")
 //注解标志到类上，表明设置请求的基础信息(一级路由)
 public class TestRequestMappingController {
-    @RequestMapping("/hello")
+    //@RequestMapping("/hello")
+    @RequestMapping(
+            value = {"/hello","/abc"},
+            method = {RequestMethod.POST,RequestMethod.GET},
+            //params = {"username","!password","age=20","gender!=女"}
+            headers = {"referer"}
+    )
+    //可以匹配多个请求
     //注解标志到方法上，表明设置请求的具体信息(二级路由)
     //输入http://localhost:1968/test/hello才能正确访问到
     public String hello(){
+        return "success";
+    }
+    //@RequestMapping("/a?a/test/ant")
+    //@RequestMapping("/a*a/test/ant")
+    @RequestMapping("/a/**/a/test/ant")
+    public String testAnt(){
+        return "success";
+    }
+
+    @RequestMapping("/test/rest/{username}/{id}")
+    public String testRest(@PathVariable("id") Integer id,@PathVariable("username") String username){
+        System.out.println("id:" + id);
+        System.out.println("username:" + username);
+        return "success";
+    }
+
+    @RequestMapping("/param/pojo")
+    public String getParamByPojo(User user){
+        System.out.println(user);
         return "success";
     }
 }

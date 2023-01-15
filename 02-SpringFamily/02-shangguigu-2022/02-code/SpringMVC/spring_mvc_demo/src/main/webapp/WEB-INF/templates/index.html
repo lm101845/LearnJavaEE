@@ -6,6 +6,48 @@
 </head>
 <body>
   <h1>你好，世界</h1>
-  <a th:href="@{/hello}">测试@RequestMapping注解所标识的位置</a>
+  <a th:href="@{/hello}">测试@RequestMapping注解所标识的位置</a><br>
+  <a th:href="@{/abc}">测试@RequestMapping注解的value属性</a>
+  <form th:action="@{/hello}" method="post">
+      <input type="submit" value="测试@RequestMapping注解的method属性">
+  </form>
+  <a th:href="@{/hello?username=admin}">测试@RequestMapping注解的params属性</a><br>
+  <a th:href="@{/hello(username='admin')}">测试@RequestMapping注解的params属性</a><br>
+  <a th:href="@{/aba/test/ant}">测试@RequestMapping注解支持ant风格的路径1</a><br>
+  <a th:href="@{/ava/test/ant}">测试@RequestMapping注解支持ant风格的路径2</a><br>
+  <a th:href="@{/ava/test/ant}">测试@RequestMapping注解支持ant风格的路径3</a><br>
+  <a th:href="@{/test/rest/zhangsan/1}">测试@RequestMapping注解的value属性中的占位符</a><br>
+  <hr>
+  <form th:action="@{/param/servletAPI}" method="post">
+      用户名：<input type="text" name="username"><br>
+      密码：<input type="password" name="password"><br>
+      <input type="submit" value="登录"><br>
+  </form>
+  <br>
+  <form th:action="@{/param}" method="post">
+      用户名：<input type="text" name="username"><br>
+      密码：<input type="password" name="password"><br>
+      <input type="submit" value="登录"><br>
+  </form>
+  <br>
+  <form th:action="@{/param2}" method="post">
+      用户名：<input type="text" name="userName"><br>
+      密码：<input type="password" name="password"><br>
+      <input type="submit" value="登录"><br>
+  </form>
+
+  <br>
+  <form th:action="@{/param3}" method="post">
+      用户名：<input type="text" name="userName"><br>
+      密码：<input type="password" name="password"><br>
+      <input type="submit" value="登录"><br>
+  </form>
+
+  <hr>
+  <form th:action="@{/pojo}" method="post">
+      用户名：<input type="text" name="username"><br>
+      密码：<input type="password" name="password"><br>
+      <input type="submit" value="登录"><br>
+  </form>
 </body>
 </html>

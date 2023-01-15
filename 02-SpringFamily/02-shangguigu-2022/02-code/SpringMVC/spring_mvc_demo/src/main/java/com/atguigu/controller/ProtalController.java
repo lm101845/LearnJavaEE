@@ -14,8 +14,8 @@ public class ProtalController {
         return "index";
     }
 
-    @RequestMapping("/hello")
-    public String hello(){
-        return "success";
-    }
+    //@RequestMapping("/hello")
+    //public String hello(){
+    //    return "success";
+    //}
 }
