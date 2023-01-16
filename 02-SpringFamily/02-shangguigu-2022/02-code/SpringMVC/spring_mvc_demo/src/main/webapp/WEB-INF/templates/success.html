@@ -6,5 +6,9 @@
 </head>
 <body>
 <h1>打入四强就算成功</h1>
+<p th:text="${testRequestScope}"></p>
+<p th:text="${session.testSessionScope}"></p>
+<p th:text="${application.testApplicationScope}"></p>
+<!--thyleaf中request可以省略，但是session和application不能省略-->
 </body>
 </html>
