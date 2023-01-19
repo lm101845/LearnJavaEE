@@ -13,4 +13,15 @@ public class TestViewController {
     public String testThymeleafView(){
         return "success";
     }
+
+    //转发
+    @RequestMapping("/test/view/forward")
+    public String testInternalResourceView(){
+        return "forward:/test/model";
+    }
+    //重定向
+    @RequestMapping("/test/view/redirect")
+    public String testRedirectView(){
+        return "redirect:/test/model";
+    }
 }

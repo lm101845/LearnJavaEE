@@ -970,7 +970,9 @@ public class EmployeeDao {
     private static Integer initId = 1006;
     public void save(Employee employee){
         if(employee.getId() == null){
+            //添加功能没有id，修改功能才有id
             employee.setId(initId++);
+            //先赋值，再自增
         }
         employees.put(employee.getId(), employee);
     }

@@ -5,12 +5,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @Author liming
- * @Date 2023/1/12 21:25
+ * @Date 2023/1/19 14:36
  **/
 @Controller
-public class ProtalController {
-    //@RequestMapping("/")
-    //public String protal(){
-    //    return "index";
-    //}
+public class TestController {
+    @RequestMapping("/test/hello")
+    public String testHello(){
+        return "success";
+    }
 }
