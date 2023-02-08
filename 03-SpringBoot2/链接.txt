@@ -1,5 +1,7 @@
 https://www.bilibili.com/video/BV19K4y1L7MT?p=1
 
+视频一共26个小时，还是比较精炼的。
+
 尚硅谷SpringBoot2视频教程
 下载链接：https://pan.baidu.com/s/10Rx6K-uTOzZsMd0DPWi-Gg，提取码：9bn2
 B站直达：https://www.bilibili.com/video/BV19K4y1L7MT
@@ -7,3 +9,4 @@ B站直达：https://www.bilibili.com/video/BV19K4y1L7MT
 视频配套源码地址：https://gitee.com/leifengyang/springboot2
 
 第1-5集看完——23-02-04
+第6-10集看完——23-02-08

@@ -47,7 +47,7 @@ public class MainApplication {
 //
 //        Pet tom02 = run.getBean("tom", Pet.class);
 //
-//        System.out.println("组件："+(tom01 == tom02));
+//
 //
 //
 //        //4、com.atguigu.boot.config.MyConfig$$EnhancerBySpringCGLIB$$51f1e1ca@1654a892

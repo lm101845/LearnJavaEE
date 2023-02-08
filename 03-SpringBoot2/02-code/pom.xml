@@ -19,6 +19,9 @@
         <version>2.3.4.RELEASE</version>
     </parent>
 
+    <!--<properties>-->
+    <!--    <mysql.version>5.1.43</mysql.version>-->
+    <!--</properties>-->
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
