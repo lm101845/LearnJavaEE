@@ -14,6 +14,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
+import org.springframework.cache.interceptor.CacheAspectSupport;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
@@ -27,7 +29,8 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableAutoConfiguration
 @ComponentScan("com.atguigu.boot")
 
-//上面的一个注解 = 下面的三个注解
+//@SpringBootApplication
+//下面的一个注解 = 上面的三个注解
 public class MainApplication {
     public static void main(String[] args) {
         //返回IOC容器
@@ -38,7 +41,15 @@ public class MainApplication {
             System.out.println(name);
         }
 
+        int beanDefinitionCount = run.getBeanDefinitionCount();
+        System.out.println("数量" + beanDefinitionCount);
+
+        String[] beanNamesForType = run.getBeanNamesForType(CacheAspectSupport.class);
+        System.out.println("======"+beanNamesForType.length);
+
         ////3.从容器中获取组件
+        String[] beanNamesForType1 = run.getBeanNamesForType(WebMvcProperties.class);
+        System.out.println("======"+beanNamesForType1.length);
         //Object tom01 = run.getBean("tom", Pet.class);
         //Object tom02 = run.getBean("tom", Pet.class);
         //System.out.println("组件："+(tom01 == tom02));  //true,它是单例的
