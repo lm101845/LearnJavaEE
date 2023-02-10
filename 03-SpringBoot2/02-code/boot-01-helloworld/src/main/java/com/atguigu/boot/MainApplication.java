@@ -50,6 +50,7 @@ public class MainApplication {
         ////3.从容器中获取组件
         String[] beanNamesForType1 = run.getBeanNamesForType(WebMvcProperties.class);
         System.out.println("======"+beanNamesForType1.length);
+
         //Object tom01 = run.getBean("tom", Pet.class);
         //Object tom02 = run.getBean("tom", Pet.class);
         //System.out.println("组件："+(tom01 == tom02));  //true,它是单例的
