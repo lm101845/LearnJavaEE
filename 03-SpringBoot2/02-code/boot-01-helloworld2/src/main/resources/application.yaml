@@ -34,7 +34,7 @@ person:
 
 
 
-
+#spring原生配置文件是有提示的
 #spring:
 #  banner:
 #    image:
