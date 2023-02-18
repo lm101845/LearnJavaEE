@@ -5,3 +5,11 @@
 #    resources:
 #      static-locations: [classpath:/haha/]
       #配了这个静态资源路径，则只有haha文件夹下的文件才能访问到，并且路由名为/res/timg.jpg
+resources:
+  static-locations: [classpath:/haha/]
+  add-mappings: true
+  cache:
+    period: 11000
+server:
+  servlet:
+    context-path: /world
