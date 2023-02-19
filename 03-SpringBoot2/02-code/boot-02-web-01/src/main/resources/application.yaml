@@ -1,15 +1,21 @@
-#spring:
-#  mvc:
-#    static-path-pattern: /res/**
-#  web:
-#    resources:
-#      static-locations: [classpath:/haha/]
-      #配了这个静态资源路径，则只有haha文件夹下的文件才能访问到，并且路由名为/res/timg.jpg
-resources:
-  static-locations: [classpath:/haha/]
-  add-mappings: true
-  cache:
-    period: 11000
+spring:
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+    contentnegotiation:
+      favor-parameter: true
+  #  mvc:
+  #    static-path-pattern: /res/**
+
+  web:
+    resources:
+      static-locations:
+        [ classpath:/haha/]
+      cache:
+        period: 11000
+      add-mappings: true
 server:
   servlet:
-    context-path: /world
+#    context-path: /world
+
