@@ -1,6 +1,9 @@
 package com.atguigu.boot.controller;
 
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * @Author liming
@@ -18,6 +21,10 @@ import org.springframework.web.bind.annotation.*;
 public class HelloController {
     @RequestMapping("/bug.jpg")
     public String hello(){
+    //public String hello(Person person){
+    //public String hello(Model model){
+    //public String hello(HttpSession session){
+    //public String hello(@RequestParam("username") String name){
         return "aaa";
         //此时会返回字符串aaa还是返回图片呢？
         //答：返回的是aaa字符串！！！
