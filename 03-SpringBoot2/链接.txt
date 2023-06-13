@@ -23,3 +23,5 @@ B站直达：https://www.bilibili.com/video/BV19K4y1L7MT
 第43集看完——23-03-25
 第44-45集看完——23-04-07
 第46集看完——23-04-07
+
+先不看了，先去做个SpringBoot项目去。
