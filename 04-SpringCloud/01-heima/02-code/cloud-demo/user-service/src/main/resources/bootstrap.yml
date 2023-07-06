@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: userservice # 服务名称
+  profiles:
+    active: dev #开发环境，这里是dev
+  cloud:
+    nacos:
+      server-addr: 101.201.238.8:8848  # Nacos地址
+      discovery:
+        cluster-name: SH
+        namespace: 27a9bca9-830e-4dd8-a78c-ac9bcd2bb038
+      config:
+        file-extension: yaml # 文件后缀名
