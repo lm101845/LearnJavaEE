@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--1.获取bean演示user对象创建-->
+    <bean id="user" class="com.atguigu.spring6.iocxml.User"></bean>
+    <!--当【根据类型】获取bean时，要求IOC容器中指定类型的bean有且只能有一个-->
+    <!--报错信息：No qualifying bean of type 'com.atguigu.spring6.iocxml.User' available:
+    expected single matching bean but found 2: user,user1-->
+    <!--<bean id="user1" class="com.atguigu.spring6.iocxml.User"></bean>-->
+
+
+    <!--2.一个接口实现类获取过程-->
+    <!--接口不能new，所以我们要获取它实现类的对象-->
+    <bean id="userDaoImpl" class="com.atguigu.spring6.iocxml.bean.UserDaoImpl"></bean>
+    <!--报错：No qualifying bean of type 'com.atguigu.spring6.iocxml.bean.UserDao' available:
+    expected single matching bean but found 2: userDaoImpl,personDaoImpl-->
+    <!--如果一个接口有多个实现类，这些实现类都配置了 bean，根据接口类型【不】可以获取 bean！！！-->
+    <!--<bean id="personDaoImpl" class="com.atguigu.spring6.iocxml.bean.PersonDaoImpl"></bean>-->
+</beans>

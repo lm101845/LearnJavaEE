@@ -156,7 +156,7 @@ public class HelloController {
 
 `application.properties`：
 
-* 集中式管理配置。只需要修改这个文件就行 。
+* 集中式管理配置。只需要修改这个文件就行 
 
 * 配置基本都有默认值
 
@@ -178,470 +178,227 @@ public class HelloController {
 
 ![](01-SpringBoot3快速入门/01.png)
 
-IMPORT
+##  应用分析 
 
-BOOT3-02-DEMO
-
-.MVN
-
-SRC
-
-1 USAGE
-
-MAIN
-
-@SPRINGBOOTAPPLICATION
-
-JAVA
-
-COM
-
-CLASS BOOT302DEMOAPPLICATION {
-
-PUBLIC
-
-ATGUIGU
-
-8
-
-BOOT
-
-PUBLIC STATIC VOID MAIN(STRING[] ARGS) {
-
-CONTROLLER
-
-CHELLOCONTROLLER
-
-SPRINGAPPLICATION.RUN(BOOT302DEMOAPPLICATION.CLASS, ARGS);
-
-主程序
-
-BOOT302DEMOAPPLICATION
-
-子
-
-11
-
-RESOURCES
-
-静态资源
-
-12
-
-STATIC
-
-页面模板
-
-TEMPLATES
-
-子
-
-13
-
-O APPLICATION.PROPERTIES
-
-配置文件
-
-14
-
-TEST
-
-![image.png](https://cdn.nlark.com/yuque/0/2023/png/1613913/1679922435118-bde3347e-b9fe-4138-8e16-0c231884ea5f.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_39%2Ctext_5bCa56GF6LC3IGF0Z3VpZ3UuY29t%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
-
-
-
- 3、应用分析 
-
- 1. 依赖管理机制 
+### 依赖管理机制 
 
 思考：
 
-1、为什么导入starter-web所有相关依赖都导入进来？
+* 为什么导入starter-web所有相关依赖都导入进来？
+  * 开发什么场景，导入什么**场景启动器**。
+  * maven依赖传递原则。A-B-C：A就拥有B和C
+  * 导入场景启动器。 场景启动器自动把这个场景的所有核心依赖全部导入进来
+
+* 为什么版本号都不用写？
+
+  * 每个boot项目都有一个父项目spring-boot-starter-parent
+  * parent的父项目是spring-boot-dependencies
+  * 父项目**版本仲裁中心**，把所有常见的jar的依赖版本都声明好了。
+  * 比如：`mysql-connector-j`
+
+* 自定义版本号
+
+  * 利用maven的就近原则
+    * 直接在当前项目properties标签中声明父项目用的版本属性的key
+    * 直接在导入依赖的时候声明版本
+
+* 第三方的jar包
+
+  * boot父项目没有管理的需要自行声明好
+
+  ~~~xml
+  <!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
+  <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>druid</artifactId>
+      <version>1.2.16</version>
+  </dependency>
+  
+  ~~~
+
+  ![](01-SpringBoot3快速入门/02.png)
+
+### 自动配置机制 
+
+#### 初步理解 
+
+* **自动配置**的 Tomcat、SpringMVC 等
+  * 导入场景，容器中就会自动配置好这个场景的核心组件。
+  * 以前：DispatcherServlet、ViewResolver、CharacterEncodingFilter....
+  * 现在：自动配置好的这些组件
+  * 验证：**容器中有了什么组件，就具有什么功能**
+
+~~~java
+    public static void main(String[] args) {
+
+        //java10： 局部变量类型的自动推断
+        var ioc = SpringApplication.run(MainApplication.class, args);
+
+        //1、获取容器中所有组件的名字
+        String[] names = ioc.getBeanDefinitionNames();
+        //2、挨个遍历：
+        // dispatcherServlet、beanNameViewResolver、characterEncodingFilter、multipartResolver
+        // SpringBoot把以前配置的核心组件现在都给我们自动配置好了。
+        for (String name : names) {
+            System.out.println(name);
+        }
+    }
+~~~
+
+* 默认的包扫描规则
+  * @SpringBootApplication 标注的类就是主程序类
+  * SpringBoot只会扫描主程序所在的包及其下面的子包，**自动的component-scan功能**
+  * 自定义扫描路径
+    * @SpringBootApplication(scanBasePackages = "com.atguigu")
+    * @ComponentScan("com.atguigu") 直接指定扫描的路径
+
+* 配置默认值
+  * 配置文件的所有配置项是和某个类的对象值进行一一绑定的。
+  * 绑定了配置文件中每一项值的类： **属性类**。
+  * 比如：
+    * ServerProperties绑定了所有Tomcat服务器有关的配置
+    * MultipartProperties绑定了所有文件上传相关的配置
+    * ....参照[官方文档](https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html#appendix.application-properties.server)：或者参照 绑定的  属性类。
+* **按需加载**自动配置
+  * 导入场景`spring-boot-starter-web`
+  * 场景启动器除了会导入相关功能依赖，还导入一个`spring-boot-starter`，是所有starter的starter，基础核心starter
+  * `spring-boot-starter`导入了一个包 `spring-boot-autoconfigure`。包里面都是各种场景AutoConfiguration自动配置类
+  * 虽然全场景的自动配置都在`spring-boot-autoconfigure`这个包，但是**不是全都开启的**。
+    * 导入哪个场景就开启哪个自动配置
+
+总结： 导入场景启动器、触发` spring-boot-autoconfigure`这个包的自动配置生效、容器中就会具有相关场景的功能。
+
+#### 完整流程 
+
+> 思考：
+> 1、SpringBoot怎么实现导一个starter、写一些简单配置，应用就能跑起来，我们无需关心整合
+> 2、为什么Tomcat的端口号可以配置在application.properties中，并且Tomcat能启动成功？
+> 3、导入场景后哪些自动配置能生效？
+
+![](01-SpringBoot3快速入门/03.png)
+
+![](01-SpringBoot3快速入门/04.png)
+
+**自动配置流程细节梳理：**
+
+* 导入starter-web：导入了web开发场景
+  * 场景启动器导入了相关场景的所有依赖：starter-json、starter-tomcat、springmvc
+  * 每个场景启动器都引入了一个spring-boot-starter，核心场景启动器。
+  * **核心场景启动器**引入了spring-boot-autoconfigure包。
+  * spring-boot-autoconfigure里面囊括了所有场景的所有配置。
+  * 只要这个包下的所有类都能生效，那么相当于SpringBoot官方写好的整合功能就生效了。
+  * SpringBoot默认却扫描不到 spring-boot-autoconfigure下写好的所有配置类。（这些配置类给我们做了整合操作），默认只扫描主程序所在的包。
 
-●开发什么场景，导入什么场景启动器。
+* 主程序：@SpringBootApplication
+  * @SpringBootApplication由三个注解组成@SpringBootConfiguration、@EnableAutoConfiguration、@ComponentScan
+  * SpringBoot默认只能扫描自己主程序所在的包及其下面的子包，扫描不到 spring-boot-autoconfigure包中官方写好的配置类
+  * @EnableAutoConfiguration：SpringBoot 开启自动配置的核心。
+    * 是由@Import(AutoConfigurationImportSelector.class)提供功能：批量给容器中导入组件。
+    * SpringBoot启动会默认加载 142个配置类。
+    * 这142个配置类来自于spring-boot-autoconfigure下 META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports文件指定的
+    * 项目启动的时候利用 @Import 批量导入组件机制把 autoconfigure 包下的142 xxxxAutoConfiguration类导入进来（自动配置类）
+  * 按需生效：
+    * 虽然导入了142个自动配置类，并不是这142个自动配置类都能生效
+    * 每一个自动配置类，都有条件注解@ConditionalOnxxx，只有条件成立，才能生效 
 
-●maven依赖传递原则。A-B-C： A就拥有B和C
+* xxxxAutoConfiguration自动配置类
+  * 给容器中使用@Bean 放一堆组件。
+  * 每个自动配置类都可能有这个注解@EnableConfigurationProperties(ServerProperties.class)，用来把配置文件中配的指定前缀的属性值封装到 xxxProperties属性类中
+  * 以Tomcat为例：把服务器的所有配置都是以server开头的。配置都封装到了属性类中。
+  * 给容器中放的所有组件的一些核心参数，都来自于xxxProperties。xxxProperties都是和配置文件绑定。
+  * 只需要改配置文件的值，核心组件的底层参数都能修改
 
-●导入 场景启动器。 场景启动器 自动把这个场景的所有核心依赖全部导入进来
+* 写业务，全程无需关心各种整合（底层这些整合写好了，而且也生效了）
 
-2、为什么版本号都不用写？
+**核心流程总结：**
 
-●每个boot项目都有一个父项目spring-boot-starter-parent
+* 导入starter，就会导入autoconfigure包。
 
-●parent的父项目是spring-boot-dependencies
+* autoconfigure 包里面 有一个文件 META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports,里面指定的所有启动要加载的自动配置类
 
-●父项目 版本仲裁中心，把所有常见的jar的依赖版本都声明好了。
+* @EnableAutoConfiguration会自动的把上面文件里面写的所有自动配置类都导入进来，xxxAutoConfiguration 是有条件注解进行按需加载
 
-●比如：mysql-connector-j
+* xxxAutoConfiguration给容器中导入一堆组件，组件都是从 xxxProperties中提取属性值
 
-3、自定义版本号
+* xxxProperties又是和配置文件进行了绑定
 
-●利用maven的就近原则
+效果：**导入starter、修改配置文件，就能修改底层行为**。
 
-○直接在当前项目properties标签中声明父项目用的版本属性的key
+#### 如何学好SpringBoot 
 
-○直接在导入依赖的时候声明版本
-
-4、第三方的jar包
-
-●boot父项目没有管理的需要自行声明好
-
-
-
-
-
-定义版本
-
-管理依赖
-
-SPRING-BOOT-DEPENDENCIES
-
-10G
-
-继承
-
-WEB
-
-CACHE
-
-SPRING-BOOT-STARTER-PARENT
-
-DB
-
-继承
-
-MG
-
-APP
-
-APP
-
-APP
-
-![image.png](https://cdn.nlark.com/yuque/0/2023/png/1613913/1679294529375-4ee1cd26-8ebc-4abf-bff9-f8775e10c927.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_25%2Ctext_5bCa56GF6LC3IGF0Z3VpZ3UuY29t%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
-
-
-
-
-
- 2. 自动配置机制 
-
- 1. 初步理解 
-
-●自动配置的 Tomcat、SpringMVC 等
-
-○导入场景，容器中就会自动配置好这个场景的核心组件。
-
-○以前：DispatcherServlet、ViewResolver、CharacterEncodingFilter....
-
-○现在：自动配置好的这些组件
-
-○验证：容器中有了什么组件，就具有什么功能
-
-
-
-
-
-●默认的包扫描规则
-
-○@SpringBootApplication 标注的类就是主程序类
-
-○SpringBoot只会扫描主程序所在的包及其下面的子包，自动的component-scan功能
-
-○自定义扫描路径
-
-■@SpringBootApplication(scanBasePackages = "com.atguigu")
-
-■@ComponentScan("com.atguigu") 直接指定扫描的路径
-
-●配置默认值
-
-○配置文件的所有配置项是和某个类的对象值进行一一绑定的。
-
-○绑定了配置文件中每一项值的类： 属性类。
-
-○比如：
-
-■ServerProperties绑定了所有Tomcat服务器有关的配置
-
-■MultipartProperties绑定了所有文件上传相关的配置
-
-■....参照[官方文档](https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html#appendix.application-properties.server)：或者参照 绑定的  属性类。
-
-●按需加载自动配置
-
-○导入场景spring-boot-starter-web
-
-○场景启动器除了会导入相关功能依赖，导入一个spring-boot-starter，是所有starter的starter，基础核心starter
-
-○spring-boot-starter导入了一个包 spring-boot-autoconfigure。包里面都是各种场景的AutoConfiguration自动配置类
-
-○虽然全场景的自动配置都在 spring-boot-autoconfigure这个包，但是不是全都开启的。
-
-■导入哪个场景就开启哪个自动配置
-
-
-
-总结： 导入场景启动器、触发 spring-boot-autoconfigure这个包的自动配置生效、容器中就会具有相关场景的功能
-
- 2. 完整流程 
-
-思考：
-1、SpringBoot怎么实现导一个starter、写一些简单配置，应用就能跑起来，我们无需关心整合
-2、为什么Tomcat的端口号可以配置在application.properties中，并且Tomcat能启动成功？
-3、导入场景后哪些自动配置能生效？
-
-APP
-
-CODE
-
-触发
-
-*-AUTOCONFIGURE JAR
-
-组件
-
-场景
-
-配置
-
-导入STARTER
-
-或者第三方.JAR
-
-META-INF/SPRING/ORG.SPRINGFRAMEWORK.BOOT.AUTOCONFIGURE.AUTOCONFIGURATION.IMPORTS
-
-SRC
-
-生效
-
-MAIN
-
-JAVA
-
-配置项:ORG.SPRINGFRAMEWORK.BOOT.AUTOCONFIGURE.XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-COM.ATGUIGU.BOOT01
-
-APPLICAITONPROPERTIES
-
-CONTROLLER
-
-提取属性
-
-绑定
-
-QUICKSTARTAPPLICATION
-
-组件1
-
-XXXPROPERTIES
-
-XXX.A
-
-RESOURCES
-
-提取属性
-
-绑定
-
-TEMPLATES
-
-XXXPROPERTIES
-
-YYY.B
-
-APPLICATION.PROPERTIES
-
-提取属性
-
-绑定
-
-TEST
-
-组件N
-
-XXXPROPERTIES
-
-ZZZ.N
-
-POM.XML
-
-![image.png](https://cdn.nlark.com/yuque/0/2023/png/1613913/1679970508234-3c6b8ecc-6372-4eb5-8c67-563054d1a72d.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_37%2Ctext_5bCa56GF6LC3IGF0Z3VpZ3UuY29t%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
-
-
-
-
-
-自动配置流程细节梳理：
-
-1、导入starter-web：导入了web开发场景
-
-●1、场景启动器导入了相关场景的所有依赖：starter-json、starter-tomcat、springmvc
-
-●2、每个场景启动器都引入了一个spring-boot-starter，核心场景启动器。
-
-●3、核心场景启动器引入了spring-boot-autoconfigure包。
-
-●4、spring-boot-autoconfigure里面囊括了所有场景的所有配置。
-
-●5、只要这个包下的所有类都能生效，那么相当于SpringBoot官方写好的整合功能就生效了。
-
-●6、SpringBoot默认却扫描不到 spring-boot-autoconfigure下写好的所有配置类。（这些配置类给我们做了整合操作），默认只扫描主程序所在的包。
-
-2、主程序：@SpringBootApplication
-
-●1、@SpringBootApplication由三个注解组成@SpringBootConfiguration、@EnableAutoConfiguratio、@ComponentScan
-
-●2、SpringBoot默认只能扫描自己主程序所在的包及其下面的子包，扫描不到 spring-boot-autoconfigure包中官方写好的配置类
-
-●3、@EnableAutoConfiguration：SpringBoot 开启自动配置的核心。
-
-○1. 是由@Import(AutoConfigurationImportSelector.class)提供功能：批量给容器中导入组件。
-
-○2. SpringBoot启动会默认加载 142个配置类。
-
-○3. 这142个配置类来自于spring-boot-autoconfigure下 META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports文件指定的
-
-○项目启动的时候利用 @Import 批量导入组件机制把 autoconfigure 包下的142 xxxxAutoConfiguration类导入进来（自动配置类）
-
-○虽然导入了142个自动配置类
-
-●4、按需生效：
-
-○并不是这142个自动配置类都能生效
-
-○每一个自动配置类，都有条件注解@ConditionalOnxxx，只有条件成立，才能生效 
-
-3、xxxxAutoConfiguration自动配置类
-
-●1、给容器中使用@Bean 放一堆组件。
-
-●2、每个自动配置类都可能有这个注解@EnableConfigurationProperties(ServerProperties.class)，用来把配置文件中配的指定前缀的属性值封装到 xxxProperties属性类中
-
-●3、以Tomcat为例：把服务器的所有配置都是以server开头的。配置都封装到了属性类中。
-
-●4、给容器中放的所有组件的一些核心参数，都来自于xxxProperties。xxxProperties都是和配置文件绑定。
-
-●只需要改配置文件的值，核心组件的底层参数都能修改
-
-4、写业务，全程无需关心各种整合（底层这些整合写好了，而且也生效了）
-
-
-
-核心流程总结：
-
-1、导入starter，就会导入autoconfigure包。
-
-2、autoconfigure 包里面 有一个文件 META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports,里面指定的所有启动要加载的自动配置类
-
-3、@EnableAutoConfiguration 会自动的把上面文件里面写的所有自动配置类都导入进来。xxxAutoConfiguration 是有条件注解进行按需加载
-
-4、xxxAutoConfiguration给容器中导入一堆组件，组件都是从 xxxProperties中提取属性值
-
-5、xxxProperties又是和配置文件进行了绑定
-
-
-
-效果：导入starter、修改配置文件，就能修改底层行为。
-
-
-
- 3. 如何学好SpringBoot 
-
-框架的框架、底层基于Spring。能调整每一个场景的底层行为。100%项目一定会用到底层自定义
+**框架的框架、底层基于Spring**。能调整每一个场景的底层行为。100%项目一定会用到**底层自定义**
 
 摄影：
 
-●傻瓜：自动配置好。
+* 傻瓜：自动配置好。
 
-●单反：焦距、光圈、快门、感光度....
+* 单反：焦距、光圈、快门、感光度....
 
-●傻瓜+单反：
+* 傻瓜+单反：
 
-1理解自动配置原理
+理解自动配置原理
 
-a导入starter --> 生效xxxxAutoConfiguration --> 组件 --> xxxProperties --> 配置文件
+* **导入starter** --> 生效xxxxAutoConfiguration --> **组件** --> xxxProperties --> **配置文件**
 
-2理解其他框架底层
+理解其他框架底层
 
-a拦截器
+* 拦截器
 
-3可以随时定制化任何组件
+可以随时定制化任何组件
 
-a配置文件
+* 配置文件
 
-b自定义组件
+* 自定义组件
 
+**普通开发**：导入starter，Controller、Service、Mapper、偶尔修改配置文件
 
-
-普通开发：导入starter，Controller、Service、Mapper、偶尔修改配置文件
-
-高级开发：自定义组件、自定义配置、自定义starter
+**高级开发**：自定义组件、自定义配置、自定义starter
 
 核心：
 
-●这个场景自动配置导入了哪些组件，我们能不能Autowired进来使用
+* 这个场景自动配置导入了哪些组件，我们能不能Autowired进来使用
 
-●能不能通过修改配置改变组件的一些默认参数
+* 能不能通过修改配置改变组件的一些默认参数
 
-●需不需要自己完全定义这个组件
+* 需不需要自己完全定义这个组件
 
-●场景定制化
+* **场景定制化**
 
+**最佳实战：**
 
+* 选场景，导入到项目
+  * 官方：starter
+  * 第三方：去仓库搜
 
-最佳实战：
+* 写配置，改配置文件关键项
+  * 数据库参数（连接地址、账号密码...）
 
-●选场景，导入到项目
+* 分析这个场景给我们导入了哪些能用的组件
+  * 自动装配这些组件进行后续使用
+  * 不满意boot提供的自动配好的默认组件
+    * 定制化
+      * 改配置
+      * 自定义组件
 
-○官方：starter
+**整合redis：**
 
-○第三方：去仓库搜
+* [选场景](https://docs.spring.io/spring-boot/docs/current/reference/html/using.html#using.build-systems.starters)：spring-boot-starter-data-redis 
+  * 场景AutoConfiguration 就是这个场景的自动配置类
 
-●写配置，改配置文件关键项
+* 写配置：
+  * 分析到这个场景的自动配置类开启了哪些属性绑定关系
+  * @EnableConfigurationProperties(RedisProperties.class)
+  * 修改redis相关的配置
 
-○数据库参数（连接地址、账号密码...）
+* 分析组件：
+  * 分析到 RedisAutoConfiguration  给容器中放了 StringRedisTemplate
+  * 给业务代码中自动装配 StringRedisTemplate
 
-●分析这个场景给我们导入了哪些能用的组件
+* 定制化
+  * 修改配置文件
+  * 自定义组件，自己给容器中放一个 StringRedisTemplate
 
-○自动装配这些组件进行后续使用
-
-○不满意boot提供的自动配好的默认组件
-
-■定制化
-
-●改配置
-
-●自定义组件
-
-整合redis：
-
-●[选场景](https://docs.spring.io/spring-boot/docs/current/reference/html/using.html#using.build-systems.starters)：spring-boot-starter-data-redis 
-
-○场景AutoConfiguration 就是这个场景的自动配置类
-
-●写配置：
-
-○分析到这个场景的自动配置类开启了哪些属性绑定关系
-
-○@EnableConfigurationProperties(RedisProperties.class)
-
-○修改redis相关的配置
-
-●分析组件：
-
-○分析到 RedisAutoConfiguration  给容器中放了 StringRedisTemplate
-
-○给业务代码中自动装配 StringRedisTemplate
-
-●定制化
-
-○修改配置文件
-
-○自定义组件，自己给容器中放一个 StringRedisTemplate
-
- 4、核心技能 
+####  核心技能 
 
  1. 常用注解 
 

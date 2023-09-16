@@ -35,8 +35,9 @@ public class TestUser {
         //调用方法创建对象
         //Object o = clazz.newInstance();   //过时了
         User user = (User)clazz.getDeclaredConstructor().newInstance();
-        System.out.println(user + "经过反射创建的实例");
+        System.out.println(user + "===>经过反射创建的实例");
         //经过反射创建的对象，最终会保存在容器里面
+        user.add();
     }
 
     //创建对象

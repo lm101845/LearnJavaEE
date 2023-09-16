@@ -1,8 +1,22 @@
 尚硅谷SpringBoot3视频教程
-B站直达：https://www.bilibili.com/video/BV1Es4y1q7Bf
-百度网盘：https://pan.baidu.com/s/1Kr7sUsnsJBRKrb90_fXrCw?pwd=yyds 提取码：yyds
 
+B站直达：
+https://www.bilibili.com/video/BV1Es4y1q7Bf
+
+百度网盘：
+https://pan.baidu.com/s/1Kr7sUsnsJBRKrb90_fXrCw?pwd=yyds 提取码：yyds
+
+
+代码：
+https://gitee.com/leifengyang/spring-boot-3
+
+语雀笔记：
+https://www.yuque.com/leifengyang/springboot3
+(老师的笔记在语雀上不能下载，我只能手动摘抄......)
+
+我把依赖放在父Project，发现死活识别不了，那就每个子模块写一份pom.xml吧。。。。。。
 
 视频时长24.5小时，共94集。
 
 第1-4集看完——23-09-15
+第5-7集看完——23-09-16——老师讲的是真的好，我感觉之前SpringBoot2(也是这个老师[雷东阳]讲的)学的太生疏了，还要继续努力啊...

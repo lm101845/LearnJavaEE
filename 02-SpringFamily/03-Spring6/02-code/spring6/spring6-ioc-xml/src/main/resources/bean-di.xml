@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+        <!--1.set方法注入-->
+        <bean id="book" class="com.atguigu.spring6.iocxml.di.Book">
+            <!--名字是setXXX中的XXX，其中首字母小写-->
+            <property name="bname" value="解忧杂货铺"></property>
+            <property name="author" value="东野圭吾"></property>
+        </bean>
+
+        <!--2.构造方法注入-->
+    <bean id="bookConstructor" class="com.atguigu.spring6.iocxml.di.Book">
+        <constructor-arg name="bname" value="人类简史"></constructor-arg>
+        <constructor-arg name="author" value="尤瓦尔·诺亚·赫拉利"></constructor-arg>
+    </bean>
+</beans>
