@@ -1,6 +1,9 @@
 尚硅谷Spring6视频教程
-B站直达：https://www.bilibili.com/video/BV1kR4y1b7Qc 
-百度网盘：https://pan.baidu.com/s/1qSYxccn15hVOj4D0_oHFUw?pwd=yyds 提取码: yyds
+B站直达：
+https://www.bilibili.com/video/BV1kR4y1b7Qc 
+
+百度网盘：
+https://pan.baidu.com/s/1qSYxccn15hVOj4D0_oHFUw?pwd=yyds 提取码: yyds
 
 再学一遍Spring6，来巩固一下吧。学完后再学一下SpringBoot3，之后就开始继续做项目了。
 
@@ -9,3 +12,4 @@ B站直达：https://www.bilibili.com/video/BV1kR4y1b7Qc
 
 第1-10集看完——23-09-15
 第11-20集看完——23-09-16
+第21-30集看完——23-09-17

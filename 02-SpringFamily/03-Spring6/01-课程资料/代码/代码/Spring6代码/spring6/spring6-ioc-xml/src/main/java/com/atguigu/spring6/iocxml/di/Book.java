@@ -1,14 +1,27 @@
 package com.atguigu.spring6.iocxml.di;
 
-/**
- * @Author liming
- * @Date 2023/9/16 22:46
- **/
 public class Book {
-    //给属性设置具体值，就叫依赖注入
+
     private String bname;
     private String author;
+
     private String others;
+
+    public Book() {
+        System.out.println("无参数构造执行了...");
+    }
+
+    //有参数构造方法
+    public Book(String bname, String author) {
+        System.out.println("有参数构造执行了...");
+        this.bname = bname;
+        this.author = author;
+    }
+
+    //生成set方法
+    public String getBname() {
+        return bname;
+    }
 
     public String getOthers() {
         return others;
@@ -16,20 +29,6 @@ public class Book {
 
     public void setOthers(String others) {
         this.others = others;
-    }
-
-    public Book() {
-        System.out.println("无参构造执行了");
-    }
-
-    public Book(String bname, String author) {
-        System.out.println("有参数构造执行了...");
-        this.bname = bname;
-        this.author = author;
-    }
-
-    public String getBname() {
-        return bname;
     }
 
     public void setBname(String bname) {
@@ -54,12 +53,12 @@ public class Book {
     }
 
     public static void main(String[] args) {
-        //原生写法：set方法注入
+        //set方法注入
         Book book = new Book();
-        book.setBname("恶意");
-        book.setAuthor("东野圭吾");
+        book.setBname("java");
+        book.setAuthor("尚硅谷");
 
-        //原生写法：通过构造器注入
-        Book book1 = new Book("C++", "尚硅谷");
+        //通过构造器注入
+        Book book1 = new Book("c++","尚硅谷");
     }
 }

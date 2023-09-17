@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--
+        1.创建2个对象
+        2.注入普通类型的属性
+        3.在学生bean里面注入map集合类型属性
+    -->
+    <bean id="teacherone" class="com.atguigu.spring6.iocxml.dimap.Teacher">
+        <!--注入普通类型属性-->
+        <property name="tid" value="007"></property>
+        <property name="tname" value="西门讲师"></property>
+    </bean>
+    <bean id="teachertwo" class="com.atguigu.spring6.iocxml.dimap.Teacher">
+        <!--注入普通类型属性-->
+        <property name="tid" value="008"></property>
+        <property name="tname" value="上官讲师"></property>
+    </bean>
+    <bean id="student" class="com.atguigu.spring6.iocxml.dimap.Student">
+        <!--注入普通类型属性-->
+        <property name="sid" value="1301121011"></property>
+        <property name="sname" value="张三"></property>
+        <!--在学生bean注入map集合类型属性-->
+        <property name="teacherMap">
+            <map>
+                <entry>
+                    <key><value>10010</value></key>
+                    <!--value因为不是普通值，是对象值，所以不能直接用value标签-->
+                    <ref bean="teacherone"></ref>
+                </entry>
+
+                <entry>
+                    <key><value>10086</value></key>
+                    <!--value因为不是普通值，是对象值，所以不能直接用value标签-->
+                    <ref bean="teachertwo"></ref>
+                </entry>
+            </map>
+        </property>
+    </bean>
+</beans>
