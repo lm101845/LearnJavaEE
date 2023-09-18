@@ -1,4 +1,4 @@
-package com.atguigu.spring6.iocxml;
+package com.atguigu.spring6.iocxml.bean;
 
 /**
  * @Author liming

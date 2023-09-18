@@ -3,11 +3,11 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     <!--1.获取bean演示user对象创建-->
-    <bean id="user" class="com.atguigu.spring6.iocxml.User"></bean>
+    <bean id="user" class="com.atguigu.spring6.iocxml.bean.User"></bean>
     <!--当【根据类型】获取bean时，要求IOC容器中指定类型的bean有且只能有一个-->
-    <!--报错信息：No qualifying bean of type 'com.atguigu.spring6.iocxml.User' available:
+    <!--报错信息：No qualifying bean of type 'com.atguigu.spring6.iocxml.bean.User' available:
     expected single matching bean but found 2: user,user1-->
-    <!--<bean id="user1" class="com.atguigu.spring6.iocxml.User"></bean>-->
+    <!--<bean id="user1" class="com.atguigu.spring6.iocxml.bean.User"></bean>-->
 
 
     <!--2.一个接口实现类获取过程-->

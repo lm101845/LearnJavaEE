@@ -1,6 +1,4 @@
-import com.atguigu.spring6.iocxml.User;
 import com.atguigu.spring6.iocxml.bean.UserDao;
-import com.atguigu.spring6.iocxml.bean.UserDaoImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

@@ -1,4 +1,4 @@
-import com.atguigu.spring6.iocxml.User;
+import com.atguigu.spring6.iocxml.bean.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
