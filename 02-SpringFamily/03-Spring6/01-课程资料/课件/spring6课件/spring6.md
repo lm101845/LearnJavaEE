@@ -3130,7 +3130,7 @@ public class AnnotationApplicationContext implements ApplicationContext {
                                         System.out.println("正在加载【"+ aClass.getInterfaces()[0] +"】,实例对象是：" + instance.getClass().getName());
                                         beanFactory.put(aClass.getInterfaces()[0], instance);
                                     }else{
-                                        //如果有接口把自己的class当成key，实例对象当成value
+                                        //如果没有接口把自己的class当成key，实例对象当成value
                                         System.out.println("正在加载【"+ aClass.getName() +"】,实例对象是：" + instance.getClass().getName());
                                         beanFactory.put(aClass, instance);
                                     }

@@ -23,15 +23,22 @@ public class UserController2 implements UserService2 {
     //}
 
     //第四种方式：形参上注入(这个我就不单独新建一个包了，太麻烦了)
+    //public UserController2(@Autowired UserService2 userService2) {
+    //    this.userService2 = userService2;
+    //}
 
-    public UserController2(@Autowired UserService2 userService2) {
+
+
+    //第五种方式：只有一个有参数构造函数，可以不加注解(这个我就不单独新建一个包了，太麻烦了)
+    public UserController2(UserService2 userService2) {
         this.userService2 = userService2;
     }
 
     @Override
     public void add() {
         //System.out.println("controller...构造方法注入");
-        System.out.println("controller...形参上注入");
+        //System.out.println("controller...形参上注入");
+        System.out.println("controller...只有一个有参数构造函数，可以不加注解注入");
         userService2.add();
     }
     //注意：注入实现类是可以的，但实际开发都会注入接口

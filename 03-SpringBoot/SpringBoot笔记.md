@@ -112,6 +112,47 @@ public @interface Autowired {
   - 注解上
 - 第二处：该注解有一个required属性，默认值是true，表示在注入的时候要求被注入的Bean必须是存在的，如果不存在则报错。如果required属性设置为false，表示注入的Bean存在或者不存在都没关系，存在的话就注入，不存在的话，也不报错。
 
+### @Resource
+
+[@Resource注解](https://blog.csdn.net/weixin_38237873/article/details/83650429)
+
+@Resource和@Autowired注解都是用来实现依赖注入的。只是@AutoWried按by type自动注入，而@Resource默认按byName自动注入。
+
+>  @Resource与@Autowired注解区别：
+
+@Resource注解也可以完成属性注入。那它和@Autowired注解有什么区别？
+
+- @Resource注解是JDK扩展包中的，也就是说属于JDK的一部分。所以该注解是标准注解，更加具有通用性。(JSR-250标准中制定的注解类型。JSR是Java规范提案。)
+- @Autowired注解是Spring框架自己的。
+- **@Resource注解默认根据名称装配byName，未指定name时，使用属性名作为name。通过name找不到的话会自动启动通过类型byType装配。**
+- **@Autowired注解默认根据类型装配byType，如果想根据名称装配，需要配合@Qualifier注解一起用。**
+- @Resource注解用在属性上、setter方法上。
+- @Autowired注解用在属性上、setter方法上、构造方法上、构造方法参数上。
+
+@Resource注解属于JDK扩展包，所以不在JDK当中，需要额外引入以下依赖：【**如果是JDK8的话不需要额外引入依赖。高于JDK11或低于JDK8需要引入以下依赖。**】
+
+~~~po
+<dependency>
+    <groupId>jakarta.annotation</groupId>
+    <artifactId>jakarta.annotation-api</artifactId>
+    <version>2.1.1</version>
+</dependency>
+~~~
+
+### @Configuration
+
+[@Configuration注解有什么用](https://blog.csdn.net/yldmkx/article/details/117780008)
+
+[聊透spring @Configuration配置类](https://juejin.cn/post/7189145749618163768)
+
+该注解的作用是：`用来定义当前类为配置类`。通常情况下。加了`@Configuration`的配置类内部，都会`包含一个或多个@Bean注解的方法`。
+
+> 需要特别说明的是：`@Configuration继承了@Component`，这意味着@Configuration拥有@Component的全部功能，这也正是只加@Configuration，也能被Spring扫描并处理的原因。
+
+### @ComponentScan
+
+自动扫描指定包下所有使用`@Service、@Component、@Controller、@Repository`的类并注册（类上）。
+
 ## 问题
 
 > 我有一个问题，不是说autowired自动注入需要set方法的嘛，像构造方法这些的注入，并没有set方法，为什么也可以自动注入啊
