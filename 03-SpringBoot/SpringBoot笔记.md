@@ -153,6 +153,12 @@ public @interface Autowired {
 
 自动扫描指定包下所有使用`@Service、@Component、@Controller、@Repository`的类并注册（类上）。
 
+## 方法
+
+### getBean
+
+[Spring——ApplicationContext之getBean方法详解](https://blog.csdn.net/weixin_43949634/article/details/113963411)
+
 ## 问题
 
 > 我有一个问题，不是说autowired自动注入需要set方法的嘛，像构造方法这些的注入，并没有set方法，为什么也可以自动注入啊

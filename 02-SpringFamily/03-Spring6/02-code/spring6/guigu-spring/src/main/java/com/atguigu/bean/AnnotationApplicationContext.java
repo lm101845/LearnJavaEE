@@ -1,14 +1,17 @@
 package com.atguigu.bean;
 
 import com.atguigu.annotation.Bean;
+import com.atguigu.annotation.Di;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @Author liming
@@ -54,8 +57,10 @@ public class AnnotationApplicationContext implements ApplicationContext{
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        //属性注入
+        loadDi();
     }
+
 
     //包扫描的过程，让bean进行实例化
     private  void loadBean(File file) throws Exception {
@@ -103,6 +108,38 @@ public class AnnotationApplicationContext implements ApplicationContext{
                             }
                         }
 
+                    }
+                }
+            }
+        }
+    }
+
+    //属性注入
+    //通俗易懂：获取map集合中的对象，再获取属性进行判断，条件符合根据属性类型注入这个类中。
+    private void loadDi(){
+        //实例化对象都在beanFactory的map集合里面
+        //1.遍历beanFactory的map集合
+        Set<Map.Entry<Class, Object>> entries = beanFactory.entrySet();
+        for (Map.Entry<Class, Object> entry:entries){
+            //2.获取map集合每个对象(value),每个对象属性获取到
+            Object obj = entry.getValue();
+            //获取对象class
+            Class<?> clazz = obj.getClass();
+            //获取每个对象属性
+            Field[] declaredFields = clazz.getDeclaredFields();   //每个对象属性获取到
+            //3.遍历得到的每个对象属性数组，得到每个属性
+            //我才反应过来，你这一个类或接口只能对应一个实例化对象把？——单例
+            for (Field field:declaredFields){
+                //4.判断属性上面是否有@Di注解
+                Di annotation = field.getAnnotation(Di.class);
+                if(annotation != null){
+                    field.setAccessible(true);
+                    //如果私有属性，设置可以设置值
+                    //5.如果有@Di注解，把对象进行设置(注入)
+                    try{
+                        field.set(obj,beanFactory.get(field.getType()));
+                    }catch (IllegalAccessException e){
+                        throw new RuntimeException(e);
                     }
                 }
             }
