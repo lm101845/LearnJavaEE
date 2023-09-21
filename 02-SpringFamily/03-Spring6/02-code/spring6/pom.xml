@@ -13,8 +13,10 @@
         <module>spring6-ioc-xml</module>
         <module>spring6-ioc-annotation</module>
         <module>spring6-reflect</module>
-        <module>guigu-spring</module>
+        <module>spring6-guli</module>
         <module>spring6-aop</module>
+        <module>spring6-junit</module>
+        <module>spring6-jdbc-tx</module>
     </modules>
 
     <properties>
@@ -44,11 +46,25 @@
             <version>6.0.2</version>
         </dependency>
 
+        <!--spring对junit的支持相关依赖-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>6.0.2</version>
+        </dependency>
+
         <!--junit5测试-->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.3.1</version>
+            <version>5.9.0</version>
+        </dependency>
+
+        <!-- junit4测试 -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
         </dependency>
 
         <!--log4j2的依赖-->

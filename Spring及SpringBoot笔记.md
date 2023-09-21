@@ -1,6 +1,20 @@
-# SpringBoot笔记
+# Spring及SpringBoot笔记
 
 ## 注解
+
+### @Bean
+
+[大白话讲解Spring的@bean注解](https://zhuanlan.zhihu.com/p/99870991)
+
+添加在配置类中返回对象的**方法**上。使得Spring框架自动调用此方法，并管理此方法返回的对象放入容器。
+
+Spring的@Bean注解用于告诉**方法**，产生一个Bean对象，然后这个Bean对象交给Spring管理。 产生这个Bean对象的方法Spring只会调用一次，随后这个Spring将会将这个Bean对象放在自己的IOC容器中。@Bean明确地指示了一种方法，什么方法呢？产生一个bean的方法，并且交给Spring容器管理；从这我们就明白了为啥@Bean是放在方法的注释上了，因为它很明确地告诉被注释的方法，你给我产生一个Bean，然后交给Spring容器，剩下的你就别管了。记住，@Bean就放在方法上，就是让方法去产生一个Bean，然后交给Spring容器。
+
+不知道大家有没有想过，用于注册Bean的注解的有那么多个，为何还要出现@Bean注解？
+
+原因很简单：类似@Component , @Repository , @ Controller , @Service 这些注册Bean的注解存在局限性，只能局限作用于自己编写的类，如果是一个jar包第三方库要加入IOC容器的话，这些注解就手无缚鸡之力了，是的，@Bean注解就可以做到这一点！当然除了@Bean注解能做到还有@Import也能把第三方库中的类实例交给spring管理，而且@Import更加方便快捷，只是@Import注解并不在本篇范围内，这里就不再概述。
+
+使用@Bean注解的另一个好处就是能够动态获取一个Bean对象，能够根据环境不同得到不同的Bean对象。
 
 ### @GetMapping等URL处理注解
 
@@ -149,9 +163,47 @@ public @interface Autowired {
 
 > 需要特别说明的是：`@Configuration继承了@Component`，这意味着@Configuration拥有@Component的全部功能，这也正是只加@Configuration，也能被Spring扫描并处理的原因。
 
+### @ContextConfiguration
+
+`@ContextConfiguration`这个注解通常与`@RunWith(SpringJUnit4ClassRunner.class)`联合使用用来测试。
+
+举例：
+
+~~~
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:bean.xml")
+~~~
+
 ### @ComponentScan
 
 自动扫描指定包下所有使用`@Service、@Component、@Controller、@Repository`的类并注册（类上）。
+
+### @SpringJUnitConfig
+
+举例：`@SpringJUnitConfig(locations = "classpath:bean.xml")`
+
+等价写法：
+
+~~~
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration("classpath:bean.xml")
+~~~
+
+@SpringJUnitConfig注解是SpringBoot框架中的一个注解，用于单元测试。它可以用来加载应用程序上下文，并且可以使用该注释配置应用程序上下文。它可以代替通常使用的@RunWith(SpringRunner.class)和@SpringBootTest注释。
+
+通过使用@SpringJUnitConfig，可以在单元测试期间方便地配置应用程序上下文，并且可以使用该注释配置应用程序上下文。
+
+### @Transactional
+
+ @Tranasctional注解是Spring 框架提供的声明式注解事务解决方案，我们在开发中使用事务保证方法对数据库操作的原子性，要么全部成功，要么全部失败，在使用@Transactional注解时需要注意以下问题:
+
+* @Transactional  注解只能用在public 方法上，如果用在protected或者private的方法上，不会报错，但是该注解不会生效。
+* @Transactional注解只能回滚非检查型异常，具体为RuntimeException及其子类和Error子类，可以从Spring源码的DefaultTransactionAttribute类里找到判断方法rollbackOn。
+* 使用rollbackFor 属性来定义回滚的异常类型，使用 propagation 属性定义事务的传播行为。如:   回滚Exception类的异常，事务的传播行为支持当前事务，当前如果没有事务，那么会创建一个事务。
+* @Transactional注解不能回滚被try{}catch() 捕获的异常。
+* @Transactional注解只能对在被Spring 容器扫描到的类下的方法生效。
+
+@Transactional标识在方法上，则只会影响该方法；@Transactional标识的类上，则会影响类中所有的方法
 
 ## 方法
 
