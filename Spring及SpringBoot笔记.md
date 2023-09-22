@@ -161,7 +161,7 @@ public @interface Autowired {
 
 该注解的作用是：`用来定义当前类为配置类`。通常情况下。加了`@Configuration`的配置类内部，都会`包含一个或多个@Bean注解的方法`。
 
-> 需要特别说明的是：`@Configuration继承了@Component`，这意味着@Configuration拥有@Component的全部功能，这也正是只加@Configuration，也能被Spring扫描并处理的原因。
+> 需要特别说明的是：`@Configuration`**继承**了`@Component`，这意味着@Configuration拥有@Component的全部功能，这也正是只加@Configuration，也能被Spring扫描并处理的原因。
 
 ### @ContextConfiguration
 
@@ -204,6 +204,34 @@ public @interface Autowired {
 * @Transactional注解只能对在被Spring 容器扫描到的类下的方法生效。
 
 @Transactional标识在方法上，则只会影响该方法；@Transactional标识的类上，则会影响类中所有的方法
+
+### @SpringBootApplication
+
+表明这是一个SpringBoot应用。@SpringBootApplication由三个注解组成@SpringBootConfiguration、@EnableAutoConfiguration、@ComponentScan。
+
+### @Scope
+
+@Scope注解用于指定Bean的作用域
+
+### 条件注解
+
+* @ConditionalOnClass：如果类路径中存在这个类，则触发指定行为
+
+* @ConditionalOnMissingClass：如果类路径中不存在这个类，则触发指定行为
+
+* @ConditionalOnBean：如果容器中存在这个Bean（组件），则触发指定行为
+
+* @ConditionalOnMissingBean：如果容器中不存在这个Bean（组件），则触发指定行为
+
+### @ConfigurationProperties
+
+声明组件的属性和配置文件哪些前缀开始项进行绑定
+
+### @EnableConfigurationProperties
+
+快速注册注解。
+
+> 场景：SpringBoot默认只扫描自己主程序所在的包。如果导入第三方包，即使组件上标注了 @Component、@ConfigurationProperties 注解，也没用。因为组件都扫描不进来，此时使用这个注解就可以快速进行属性绑定并把组件注册进容器
 
 ## 方法
 

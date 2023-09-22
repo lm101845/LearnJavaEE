@@ -10,6 +10,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>boot3-01-demo</module>
+        <module>boot3-02-demo</module>
     </modules>
 
     <!--所有springboot项目都必须继承自 spring-boot-starter-parent -->
@@ -22,7 +23,18 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <druid.version>1.2.16</druid.version>
     </properties>
 
+    <!--依赖管理，用于管理spring-cloud的依赖-->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

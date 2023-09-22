@@ -398,41 +398,41 @@ public class HelloController {
   * 修改配置文件
   * 自定义组件，自己给容器中放一个 StringRedisTemplate
 
-####  核心技能 
+##  核心技能 
 
- 1. 常用注解 
+### 常用注解 
 
-SpringBoot摒弃XML配置方式，改为全注解驱动
+> SpringBoot摒弃XML配置方式，改为全注解驱动
 
- 1. 组件注册 
+#### 组件注册 
 
-@Configuration、@SpringBootConfiguration
+* @Configuration、@SpringBootConfiguration
 
-@Bean、@Scope
+  > @Configuration和@SpringBootConfiguration都是Spring框架中的注解，用于标记一个类作为配置类。它们的作用是相同的，都可以用来定义Bean。但是，@SpringBootConfiguration是Spring Boot框架中的注解，它继承自@Configuration注解，并且可以自动扫描所有的jar包，并将其中的自动配置类加载到Spring容器中。因此，在Spring Boot应用程序中，通常使用@SpringBootConfiguration注解来标记一个类作为配置类。
 
-@Controller、 @Service、@Repository、@Component
+* @Bean、@Scope
 
-@Import
+  > @Scope注解用于指定Bean的作用域
 
-@ComponentScan
+* @Controller、 @Service、@Repository、@Component
 
+* @Import
 
+* @ComponentScan
 
 步骤：
 
-1、@Configuration 编写一个配置类
+* @Configuration 编写一个配置类
 
-2、在配置类中，自定义方法给容器中注册组件。配合@Bean
+* 在配置类中，自定义方法给容器中注册组件，配合@Bean
 
-3、或使用@Import 导入第三方的组件
+* 或使用@Import 导入第三方的组件
 
+#### 条件注解 
 
+> 如果注解指定的条件成立，则触发指定行为
 
- 2. 条件注解 
-
-如果注解指定的条件成立，则触发指定行为
-
-@ConditionalOnXxx
+**@ConditionalOnXxx**
 
 @ConditionalOnClass：如果类路径中存在这个类，则触发指定行为
 
@@ -443,30 +443,68 @@ SpringBoot摒弃XML配置方式，改为全注解驱动
 @ConditionalOnMissingBean：如果容器中不存在这个Bean（组件），则触发指定行为
 
 场景：
-●如果存在FastsqlException这个类，给容器中放一个Cat组件，名cat01，
-●否则，就给容器中放一个Dog组件，名dog01
-●如果系统中有dog01这个组件，就给容器中放一个 User组件，名zhangsan 
-●否则，就放一个User，名叫lisi
 
-@ConditionalOnBean（value=组件类型，name=组件名字）：判断容器中是否有这个类型的组件，并且名字是指定的值
+* 如果存在FastsqlException这个类，给容器中放一个Cat组件，名cat01，
+* 否则，就给容器中放一个Dog组件，名dog01
+* 如果系统中有dog01这个组件，就给容器中放一个 User组件，名zhangsan 
+* 否则，就放一个User，名叫lisi
 
+**@ConditionalOnBean（value=组件类型，name=组件名字）：判断容器中是否有这个类型的组件，并且名字是指定的值**
 
+@ConditionalOnRepositoryType (org.springframework.boot.autoconfigure.data) 
 
-@ConditionalOnRepositoryType (org.springframework.boot.autoconfigure.data) @ConditionalOnDefaultWebSecurity (org.springframework.boot.autoconfigure.security) @ConditionalOnSingleCandidate (org.springframework.boot.autoconfigure.condition) @ConditionalOnWebApplication (org.springframework.boot.autoconfigure.condition) @ConditionalOnWarDeployment (org.springframework.boot.autoconfigure.condition) @ConditionalOnJndi (org.springframework.boot.autoconfigure.condition) @ConditionalOnResource (org.springframework.boot.autoconfigure.condition) @ConditionalOnExpression (org.springframework.boot.autoconfigure.condition) @ConditionalOnClass (org.springframework.boot.autoconfigure.condition) @ConditionalOnEnabledResourceChain (org.springframework.boot.autoconfigure.web) @ConditionalOnMissingClass (org.springframework.boot.autoconfigure.condition) @ConditionalOnNotWebApplication (org.springframework.boot.autoconfigure.condition) @ConditionalOnProperty (org.springframework.boot.autoconfigure.condition) @ConditionalOnCloudPlatform (org.springframework.boot.autoconfigure.condition) @ConditionalOnBean (org.springframework.boot.autoconfigure.condition) @ConditionalOnMissingBean (org.springframework.boot.autoconfigure.condition) @ConditionalOnMissingFilterBean (org.springframework.boot.autoconfigure.web.servlet) @Profile (org.springframework.context.annotation) @ConditionalOnInitializedRestarter (org.springframework.boot.devtools.restart) @ConditionalOnGraphQlSchema (org.springframework.boot.autoconfigure.graphql) @ConditionalOnJava (org.springframework.boot.autoconfigure.condition)
+@ConditionalOnDefaultWebSecurity (org.springframework.boot.autoconfigure.security) 
 
- 3. 属性绑定 
+@ConditionalOnSingleCandidate (org.springframework.boot.autoconfigure.condition) 
+
+@ConditionalOnWebApplication (org.springframework.boot.autoconfigure.condition) 
+
+@ConditionalOnWarDeployment (org.springframework.boot.autoconfigure.condition) 
+
+@ConditionalOnJndi (org.springframework.boot.autoconfigure.condition) 
+
+@ConditionalOnResource (org.springframework.boot.autoconfigure.condition) 
+
+@ConditionalOnExpression (org.springframework.boot.autoconfigure.condition) 
+
+@ConditionalOnClass (org.springframework.boot.autoconfigure.condition) 
+
+@ConditionalOnEnabledResourceChain (org.springframework.boot.autoconfigure.web) 
+
+@ConditionalOnMissingClass (org.springframework.boot.autoconfigure.condition) 
+
+@ConditionalOnNotWebApplication (org.springframework.boot.autoconfigure.condition) 
+
+@ConditionalOnProperty (org.springframework.boot.autoconfigure.condition) 
+
+@ConditionalOnCloudPlatform (org.springframework.boot.autoconfigure.condition)
+
+@ConditionalOnBean (org.springframework.boot.autoconfigure.condition) 
+
+@ConditionalOnMissingBean (org.springframework.boot.autoconfigure.condition) 
+
+@ConditionalOnMissingFilterBean (org.springframework.boot.autoconfigure.web.servlet) 
+
+@Profile (org.springframework.context.annotation) 
+
+@ConditionalOnInitializedRestarter (org.springframework.boot.devtools.restart) 
+
+@ConditionalOnGraphQlSchema (org.springframework.boot.autoconfigure.graphql) 
+
+@ConditionalOnJava (org.springframework.boot.autoconfigure.condition)
+
+#### 属性绑定 
 
 @ConfigurationProperties： 声明组件的属性和配置文件哪些前缀开始项进行绑定
 
 @EnableConfigurationProperties：快速注册注解：
 
-●场景：SpringBoot默认只扫描自己主程序所在的包。如果导入第三方包，即使组件上标注了 @Component、@ConfigurationProperties 注解，也没用。因为组件都扫描不进来，此时使用这个注解就可以快速进行属性绑定并把组件注册进容器
+* 场景：SpringBoot默认只扫描自己主程序所在的包。如果导入第三方包，即使组件上标注了 @Component、@ConfigurationProperties 注解，也没用。因为组件都扫描不进来，此时使用这个注解就可以快速进行属性绑定并把组件注册进容器
 
 将容器中任意组件（Bean）的属性值和配置文件的配置项的值进行绑定
-●1、给容器中注册组件（@Component、@Bean）
-●2、使用@ConfigurationProperties 声明组件和配置文件的哪些配置项进行绑定
 
-
+* 给容器中注册组件（@Component、@Bean）
+* 使用@ConfigurationProperties 声明组件和配置文件的哪些配置项进行绑定
 
 更多注解参照：[Spring注解驱动开发](https://www.bilibili.com/video/BV1gW411W7wy)【1-26集】
 
@@ -761,71 +799,7 @@ SpringBoot 默认只把日志写在控制台，如果想额外记录到文件，
 
 最佳实战：自己要写配置，配置文件名加上 xx-spring.xml
 
- 9. 切换日志组合 
-
-
-
-
-
-XML
-
-
-
-
-
-复制代码
-
-
-
-
-
-1
-
-2
-
-3
-
-4
-
-5
-
-6
-
-7
-
-8
-
-9
-
-10
-
-11
-
-12
-
-13
-
-14
-
-15
-
-16
-
-17
-
-18
-
-
-
-
-
-
-
-
-
-
-
-
+ 9. 切换日志组合
 
 <dependency>
 
@@ -883,3 +857,7 @@ log4j2支持yaml和json格式的配置文件
 3如需对接专业日志系统，也只需要把 logback 记录的日志灌倒 kafka之类的中间件，这和SpringBoot没关系，都是日志框架自己的配置，修改配置文件即可
 
 4业务中使用slf4j-api记录日志。不要再 sout 了
+
+### YAML配置文件
+
+### 日志配置

@@ -1,5 +1,7 @@
 package com.atguigu.boot;
 
+//import com.alibaba.druid.FastsqlException;
+import com.atguigu.boot.bean.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -31,6 +33,45 @@ public class MainApplication {
         for (String name : names) {
             System.out.println(name);
         }
+        System.out.println("===================");
+
+        String[] forType = ioc.getBeanNamesForType(User.class);
+        //for (String s : forType) {
+        //    System.out.println(s);
+        //}
+
+        System.out.println("========验证単实例===========");
+        Object userHaHa1 = ioc.getBean("userHaHa");
+        Object userHaHa2 = ioc.getBean("userHaHa");
+        System.out.println(userHaHa1 == userHaHa2);   //true   false
+
+        System.out.println("=========验证自定义方法给容器中注册组件==================");
+        //String[] fastsqlException = ioc.getBeanNamesForType(FastsqlException.class);
+        //for (String s : fastsqlException) {
+        //    System.out.println(s);
+        //}
+        System.out.println("=========验证条件注解@ConditionalOnClass==================");
+        for (String s : ioc.getBeanNamesForType(Cat.class)) {
+            System.out.println("cat:" + s);
+        }
+
+        for (String s : ioc.getBeanNamesForType(Dog.class)) {
+            System.out.println("dog:" + s);
+        }
+
+        System.out.println("=========验证条件注解@ConditionalOnBean==================");
+        for (String s : ioc.getBeanNamesForType(User.class)) {
+            System.out.println("user:" + s);
+        }
+
+        System.out.println("=========验证属性绑定@ConfigurationProperties==================");
+        Pig pig = ioc.getBean(Pig.class);
+        System.out.println("pig:"+ pig);
+
+        System.out.println("=========验证快速注册注解EnableConfigurationProperties===========");
+        Sheep sheep = ioc.getBean(Sheep.class);
+        System.out.println("sheep:"+ sheep);
+
     }
 
 }
