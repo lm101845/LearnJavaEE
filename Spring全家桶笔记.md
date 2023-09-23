@@ -1,6 +1,8 @@
-# Spring及SpringBoot笔记
+# Spring全家桶笔记
 
 ## 注解
+
+**以下是Spring/SpringBoot有关注解**：
 
 ### @Bean
 
@@ -233,6 +235,63 @@ public @interface Autowired {
 
 > 场景：SpringBoot默认只扫描自己主程序所在的包。如果导入第三方包，即使组件上标注了 @Component、@ConfigurationProperties 注解，也没用。因为组件都扫描不进来，此时使用这个注解就可以快速进行属性绑定并把组件注册进容器
 
+### @SpringBootTest
+
+Spring Test与JUnit等其他测试框架结合起来，提供了便捷高效的测试手段。而Spring Boot Test 是在Spring Test之上的再次封装，增加了切片测试，增强了mock能力。
+
+整体上，Spring Boot Test支持的测试种类，大致可以分为如下三类：
+
+- 单元测试：一般面向方法，编写一般业务代码时，测试成本较大。涉及到的注解有@Test。
+- 切片测试：一般面向难于测试的边界功能，介于单元测试和功能测试之间。涉及到的注解有@RunWith @WebMvcTest等。
+- 功能测试：一般面向某个完整的业务功能，同时也可以使用切面测试中的mock能力，推荐使用。涉及到的注解有@RunWith @SpringBootTest等。
+
+=====================================分割线=============================================
+
+**以下是MyBatis/MyBatis-Plus有关注解**：
+
+### @NoArgsConstructor
+
+`@NoArgsConstructor`在类上使用，这个注解可以生成**无参**构造方法
+
+### @AllArgsConstructor
+
+`@AllArgsConstructor`在类上使用，这个注解可以生成**全参**构造方法
+
+### @Getter
+
+生成getter方法
+
+### @Setter
+
+生成setter方法
+
+### @EqualsAndHashCode
+
+此注解会生成equals(Object other) 和 hashCode()方法。
+
+### @Data
+
+~~~
+@Data = @NoArgsConstructor + @Getter + @Setter + @EqualsAndHashCode
+注意：没有有参构造！！！！
+~~~
+
+> 只添加@Data注解时，查看class文件发现只有无参构造方法，添加@AllArgsConstructor和@NoArgsConstructor两个，才能同时有无参和带参构造方法
+
+### @Mapper
+
+在接口类上添加了@Mapper，在编译之后会生成相应的接口实现类。
+
+使用 Mapper 接口的方式，不用写接口实现类，直接完成数据库操作，简单方便。
+
+### @MapperScan
+
+如果想要每个接口都要变成实现类，那么需要在每个接口类上加上@Mapper注解，比较麻烦，解决这个问题用@MapperScan。
+
+@MapperScan用于扫描mapper接口所在的包。
+
+**添加位置**：是在SpringBoot启动类上面添加。
+
 ## 方法
 
 ### getBean
@@ -252,3 +311,8 @@ public @interface Autowired {
 对于属性注入，Spring会查找匹配的属性，然后将所需的bean直接赋值给该属性。
 
 需要注意的是，当Autowired注解作用在构造方法上时，如果找不到匹配的bean，会抛出异常；而当Autowired注解作用在setter方法或属性上时，如果找不到匹配的bean，Spring会创建一个新的bean实例。
+
+## 小贴士
+
+* IOC容器中，只能存在类对应的bean，而不能存在接口对应的bean
+* 有了MyBatis-Plus以后，绝大多数情况下就不用我们自己去写SQL语句了，它给我们提供了模板mapper，我们调用模板Mapper即可。
