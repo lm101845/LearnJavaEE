@@ -1,8 +1,8 @@
 # Spring全家桶笔记
 
-## 注解
+## Spring/SpringBoot有关注解
 
-**以下是Spring/SpringBoot有关注解**：
+> 其他注解，如MyBatis等在相关笔记中。
 
 ### @Bean
 
@@ -257,36 +257,12 @@ Spring Test与JUnit等其他测试框架结合起来，提供了便捷高效的�
 - 切片测试：一般面向难于测试的边界功能，介于单元测试和功能测试之间。涉及到的注解有@RunWith @WebMvcTest等。
 - 功能测试：一般面向某个完整的业务功能，同时也可以使用切面测试中的mock能力，推荐使用。涉及到的注解有@RunWith @SpringBootTest等。
 
-=====================================分割线=============================================
-
-**以下是MyBatis/MyBatis-Plus有关注解**：
-
-### @NoArgsConstructor
-
-`@NoArgsConstructor`在类上使用，这个注解可以生成**无参**构造方法
-
-### @AllArgsConstructor
-
-`@AllArgsConstructor`在类上使用，这个注解可以生成**全参**构造方法
-
-### @Getter
-
-生成getter方法
-
-### @Setter
-
-生成setter方法
-
-### @EqualsAndHashCode
-
-此注解会生成equals(Object other) 和 hashCode()方法。
-
 ### @Data
 
-~~~
+```
 @Data = @NoArgsConstructor + @Getter + @Setter + @EqualsAndHashCode
 注意：没有有参构造！！！！
-~~~
+```
 
 > 只添加@Data注解时，查看class文件发现只有无参构造方法，添加@AllArgsConstructor和@NoArgsConstructor两个，才能同时有无参和带参构造方法
 
