@@ -209,7 +209,7 @@ public @interface Autowired {
 
 ### @SpringBootApplication
 
-表明这是一个SpringBoot应用。@SpringBootApplication由三个注解组成@SpringBootConfiguration、@EnableAutoConfiguration、@ComponentScan。
+表明这是一个SpringBoot应用。@SpringBootApplication由三个注解组成`@SpringBootConfiguration`、`@EnableAutoConfiguration`、`@ComponentScan`。其中`@EnableAutoConfiguration`是开启SpringBoot的核心注解。
 
 ### @Scope
 
@@ -227,13 +227,25 @@ public @interface Autowired {
 
 ### @ConfigurationProperties
 
-声明组件的属性和配置文件哪些前缀开始项进行绑定
+[@ConfigurationProperties 注解使用姿势，这一篇就够了](https://zhuanlan.zhihu.com/p/75601572)
+
+声明组件的属性和配置文件哪些前缀开始项进行绑定。
+
+在编写项目代码时，我们要求更灵活的配置，更好的模块化整合。在 Spring Boot 项目中，为满足以上要求，我们将大量的参数配置在 application.properties 或 application.yml 文件中，通过 `@ConfigurationProperties` 注解，我们可以方便的获取这些参数值
 
 ### @EnableConfigurationProperties
 
 快速注册注解。
 
-> 场景：SpringBoot默认只扫描自己主程序所在的包。如果导入第三方包，即使组件上标注了 @Component、@ConfigurationProperties 注解，也没用。因为组件都扫描不进来，此时使用这个注解就可以快速进行属性绑定并把组件注册进容器
+> 场景：SpringBoot默认只扫描自己主程序所在的包。如果导入第三方包，即使组件上标注了 @Component、@ConfigurationProperties 注解，也没用。因为组件都扫描不进来，此时使用这个注解就可以快速进行**属性绑定**并把组件注册进容器
+
+先说作用：
+
+@EnableConfigurationProperties注解的作用是：**使使用 @ConfigurationProperties 注解的类生效。**
+
+说明：
+
+如果一个配置类只配置@ConfigurationProperties注解，而没有使用@Component，那么在IOC容器中是获取不到properties 配置文件转化的bean。说白了 @EnableConfigurationProperties 相当于把使用  @ConfigurationProperties 的类进行了一次注入。
 
 ### @SpringBootTest
 

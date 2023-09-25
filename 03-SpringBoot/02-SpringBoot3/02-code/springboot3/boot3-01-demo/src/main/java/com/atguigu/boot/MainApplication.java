@@ -1,7 +1,9 @@
 package com.atguigu.boot;
 
+import com.atguigu.boot.bean.Person;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * @Author liming
@@ -13,6 +15,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 //这是一个SpringBoot应用
 public class MainApplication {
     public static void main(String[] args) {
-        SpringApplication.run(MainApplication.class,args);
+        ConfigurableApplicationContext ioc = SpringApplication.run(MainApplication.class, args);
+
+        Person person = ioc.getBean(Person.class);
+        System.out.println(person);
     }
 }

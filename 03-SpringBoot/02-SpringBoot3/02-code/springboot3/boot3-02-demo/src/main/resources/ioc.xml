@@ -8,7 +8,7 @@
            <property name="name" value="zhangsan"></property>
        </bean>
 
-    <bean id="cat" class="com.atguigu.boot.bean.Cat">
+    <bean id="cat" class="com.atguigu.boot.bean.Person">
         <property name="id" value="1"></property>
         <property name="name" value="mimi"></property>
     </bean>

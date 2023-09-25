@@ -1,0 +1,35 @@
+#空格多少无所谓，只要【左侧对齐】就行
+server:
+  port: 7777
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+#      下面是一个单独文档
+---
+person:
+  name: 李四
+  age: 18
+  birthDay: 2010/10/10 12:12:12
+  like: true
+  child:
+    name: 李四
+    age: 20
+    birthDay: 2018/10/10
+    text: ["abc","def"]
+  dogs:
+    - name: 小黑
+      age: 3
+    - name: 小白
+      age: 2
+  cats:
+    c1:
+      name: 小蓝
+      age: 3
+    c2: {name: 小绿,age: 2} #对象也可用{}表示

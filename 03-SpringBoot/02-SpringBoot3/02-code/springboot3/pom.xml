@@ -24,15 +24,25 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <druid.version>1.2.16</druid.version>
+        <lombok.version>1.18.30</lombok.version>
     </properties>
 
     <!--依赖管理，用于管理spring-cloud的依赖-->
     <dependencyManagement>
         <dependencies>
+            <!--druid数据库连接池-->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid</artifactId>
                 <version>${druid.version}</version>
+            </dependency>
+
+            <!--lombok插件-->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>compile</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
