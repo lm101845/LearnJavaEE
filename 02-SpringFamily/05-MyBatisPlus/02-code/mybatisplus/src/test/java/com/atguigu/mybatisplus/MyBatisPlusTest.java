@@ -29,6 +29,8 @@ public class MyBatisPlusTest {
     public void testSelectList(){
         //通过条件构造器查询一个list集合,若没有条件，则可以设置参数为null
         //写法1：
+        //写了逻辑删除后，就只能查到is_deleted为0的数据了
+        //注意：如果是自己写的查询方法就没用了，必须是plus的list()才有用
         List<User> list = userMapper.selectList(null);
         list.forEach(System.out::println);
 
@@ -69,13 +71,18 @@ public class MyBatisPlusTest {
         //实现新增用户信息
         //INSERT INTO user(id,name,age,email) VALUES(?,?,?,?)
         User user = new User();
-        user.setName("李白");
-        user.setAge(52);
-        user.setEmail("1018457683@qq.com");
+        //没有设置setId则默认使用雪花算法
+        user.setName("haha");
+        //user.setUserName("snow");
+        user.setAge(22);
+        user.setEmail("158@qq.com");
         int result = userMapper.insert(user);
         System.out.println("result:" + result);
         System.out.println("id:" + user.getId());
         //id对象自动生成(mybatis-plus的id默认使用雪花算法生成的)
+        //System.out.println("id:" + user.getUid());
+        //报错：Field 'uid' doesn't have a default value
+        //mybatis-plus只能默认将id作为主键，换成uid就不行了，使用@TableId注解解决此问题
     }
 
     @Test
@@ -115,7 +122,9 @@ public class MyBatisPlusTest {
         // UPDATE user SET name=?, email=? WHERE id=?
         User user = new User();
         user.setId(4L);
-        user.setName("李四");
+        //user.setUid(5L);
+        user.setName("李四八");
+        //user.setUserName("tom");
         user.setEmail("lisi@gmail.com");
         //如果传入的某个参数是null不会修改对应字段的
         //age没有设置，他也没有修改age字段，仍是之前的值

@@ -37,6 +37,7 @@ public class MyBatisPlusServiceTest {
         for (int i = 0; i < 10; i++) {
             User user = new User();
             user.setName("ybc" + i);
+            //user.setUserName("ybc" + i);
             user.setAge(20 + i);
             list.add(user);
         }

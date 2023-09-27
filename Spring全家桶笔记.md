@@ -18,7 +18,7 @@ Spring的@Bean注解用于告诉**方法**，产生一个Bean对象，然后这�
 
 使用@Bean注解的另一个好处就是能够动态获取一个Bean对象，能够根据环境不同得到不同的Bean对象。
 
-### @GetMapping等URL处理注解
+### 多个URL处理注解(未列举完全)
 
 [@GetMapping注解的理解](https://blog.csdn.net/qq_37924905/article/details/109137866)
 
@@ -30,7 +30,7 @@ Spring的复杂性不是来自于它处理的对象，而是来自于自身，�
 @DeleteMapping
 @PatchMapping
 从命名约定我们可以看到每个注释都是为了处理各自的传入请求方法类型，即@GetMapping用于处理请求方法的GET类型，@PostMapping用于处理请求方法的POST类型等。
-如果我们想使用传统的*@RequestMapping*注释实现URL处理程序，那么它应该是这样的：
+如果我们想使用传统的**@RequestMapping**注释实现URL处理程序，那么它应该是这样的：
 
 ~~~java
 @RequestMapping(value = “/get/{id}”, method = RequestMethod.GET)
@@ -42,7 +42,19 @@ Spring的复杂性不是来自于它处理的对象，而是来自于自身，�
 @GetMapping("/get/{id}")
 ~~~
 
+### @RequestMapping
+
+用于将任意HTTP 请求映射到控制器方法上。
+
+@RequestMapping表示共享映射，如果没有指定请求方式，将接收GET、POST、HEAD、OPTIONS、PUT、PATCH、DELETE、TRACE、CONNECT所有的HTTP请求方式。
+
+@GetMapping、@PostMapping、@PutMapping、@DeleteMapping、@PatchMapping 都是HTTP方法特有的快捷方式@RequestMapping的变体，分别对应具体的HTTP请求方式的映射注解。
+
 ### @ResponseBody
+
+> 原理：@ResponseBody由HttpMessageConverter处理
+
+[被坑过后才知道学习HttpMessageConverter有多重要](https://juejin.cn/post/6886733763020062733)
 
 在Java的Spring框架中，@ResponseBody是一个非常重要的注解。这个注解用于将Java对象转换为JSON或XML等格式，然后写入HTTP响应（response）。
 
@@ -84,7 +96,11 @@ public @ResponseBody User getUser() {
 （注：value可以不写，默认值就是User(首字母自动改成小写)）
 ~~~
 
-### 使用注解定义bean
+### @Param
+
+ @Param的作用就是给参数命名，比如在mapper里面某方法A（int id），当添加注解后A（@Param("userId") int id），也就是说外部想要取出传入的id值，只需要取它的参数名userId就可以了。将参数值传如SQL语句中，通过#{userId}进行取值给SQL的参数赋值。
+
+### 4个定义bean的注解
 
 Spring 提供了以下多个注解，这些注解可以直接标注在 Java 类上，**将它们定义成 Spring Bean**。
 
@@ -215,15 +231,15 @@ public @interface Autowired {
 
 @Scope注解用于指定Bean的作用域
 
-### 条件注解
+### 4个条件注解
 
-* @ConditionalOnClass：如果类路径中存在这个类，则触发指定行为
+* `@ConditionalOnClass`：如果类路径中存在这个类，则触发指定行为
 
-* @ConditionalOnMissingClass：如果类路径中不存在这个类，则触发指定行为
+* `@ConditionalOnMissingClass`：如果类路径中不存在这个类，则触发指定行为
 
-* @ConditionalOnBean：如果容器中存在这个Bean（组件），则触发指定行为
+* `@ConditionalOnBean`：如果容器中存在这个Bean（组件），则触发指定行为
 
-* @ConditionalOnMissingBean：如果容器中不存在这个Bean（组件），则触发指定行为
+* `@ConditionalOnMissingBean`：如果容器中不存在这个Bean（组件），则触发指定行为
 
 ### @ConfigurationProperties
 
@@ -246,6 +262,10 @@ public @interface Autowired {
 说明：
 
 如果一个配置类只配置@ConfigurationProperties注解，而没有使用@Component，那么在IOC容器中是获取不到properties 配置文件转化的bean。说白了 @EnableConfigurationProperties 相当于把使用  @ConfigurationProperties 的类进行了一次注入。
+
+### @EnableWebMvc
+
+如果我们需要全面接管SpringMVC的所有配置并**禁用默认配置**，仅需要编写一个`WebMvcConfigurer`配置类，并标注 `@EnableWebMvc` 即可
 
 ### @SpringBootTest
 
@@ -279,6 +299,104 @@ Spring Test与JUnit等其他测试框架结合起来，提供了便捷高效的�
 @MapperScan用于扫描mapper接口所在的包。
 
 **添加位置**：是在SpringBoot启动类上面添加。
+
+### @EnableWebMvc
+
+* 使用@EnableWebMvc注解启用spring mvc的基于java config的配置 
+
+* 实现WebMvcConfigurer接口的方法可以自定义spring mvc的配置
+
+### @PathVariable
+
+[@PathVariable注解的用法和作用（Demo详解）](https://blog.csdn.net/qq_43575801/article/details/128996889)
+
+@PathVariable 映射 URL 绑定的占位符
+
+通过 @PathVariable 可以**将 URL 中占位符参数**绑定到**控制器处理方法的入参**中。
+
+URL 中的 {xxx} 占位符可以通过@PathVariable(“xxx”) 绑定到操作方法的入参中。
+
+一般与@RequestMapping(method = RequestMethod.GET)一起使用
+
+~~~java
+@RequestMapping("/getUserById/{name}")
+    public User getUser(@PathVariable("name") String name){
+        return userService.selectUser(name);
+    }
+~~~
+
+若方法参数名称和需要绑定的url中变量名称一致时,可以简写:
+
+~~~java
+@RequestMapping("/getUser/{name}")
+    public User getUser(@PathVariable String name){
+        return userService.selectUser(name);
+    }
+~~~
+
+若方法参数名称和需要绑定的url中变量名称不一致时，写成:
+
+~~~java
+@RequestMapping("/getUserById/{name}")
+    public User getUser(@PathVariable("name") String userName){
+        return userService.selectUser(userName);
+    }
+~~~
+
+### @RequestParam
+
+@RequestParam是将请求参数和控制器方法的形参创建映射关系
+@RequestParam注解一共有三个属性：
+
+* value：指定为形参赋值的请求参数的参数名
+* required：设置是否必须传输此请求参数，默认值为true
+  若设置为true时，则当前请求必须传输value所指定的请求参数，若没有传输该请求参数，且没有设置defaultValue属性，则页面报错400：Required String parameter 'xxx' is not present；若设置为
+  false，则当前请求不是必须传输value所指定的请求参数，若没有传输，则注解所标识的形参的值为
+  null。
+* defaultValue：不管required属性值为true或false，当value所指定的请求参数没有传输或传输的值
+  为""时，则使用默认值为形参赋值
+
+### @RequestHeader
+
+@RequestHeader是将请求头信息和控制器方法的形参创建映射关系
+@RequestHeader注解一共有三个属性：value、required、defaultValue，用法同@RequestParam
+
+### @CookieValue
+
+@CookieValue是将cookie数据和控制器方法的形参创建映射关系
+@CookieValue注解一共有三个属性：value、required、defaultValue，用法同@RequestParam
+
+### @JacksonXmlRootElement 
+
+Jackson是一个处理JSON的类库，不过它也通过jackson-dataformat-xml包提供了处理XML的功能。
+
+引入支持写出xml内容依赖：
+
+~~~xml
+<dependency>
+    <groupId>com.fasterxml.jackson.dataformat</groupId>
+    <artifactId>jackson-dataformat-xml</artifactId>
+</dependency>
+~~~
+
+@JacksonXmlRootElement注解有两个属性：
+
+- namespace属性：用于指定XML根元素命名空间的名称。
+- localname属性：用于指定XML根元素节点标签的名称。
+
+### @ExceptionHandler
+
+@ExceptionHandler可以用来统一处理方法抛出的异常
+
+## @ControllerAdvice
+
+在Spring里，我们可以使用@ControllerAdvice来声明一些全局性的东西，最常见的是结合@ExceptionHandler注解用于全局异常的处理。
+
+@ControllerAdvice是在类上声明的注解，其用法主要有三点：
+
+- @ExceptionHandler注解标注的方法：用于捕获Controller中抛出的不同类型的异常，从而达到异常全局处理的目的；
+- @InitBinder注解标注的方法：用于请求中注册自定义参数的解析，从而达到自定义请求参数格式的目的；
+- @ModelAttribute注解标注的方法：表示此方法会在执行目标Controller方法之前执行 。
 
 ## 方法
 

@@ -307,6 +307,10 @@ public void testUpdate(){
 }
 ~~~
 
+### IService接口常用方法汇总
+
+> 暂无
+
 ### 自定义功能
 
 #### 提供通用的mapper
@@ -397,7 +401,50 @@ public void testSaveBatch(){
 }
 ~~~
 
-### IService接口常用方法汇总
+### 条件构造器Wrapper
+
+![](MyBatis及MyBatisPlus学习笔记/03.png)
+
+* Wrapper ： 条件构造抽象类，最顶端父类
+  * AbstractWrapper ： 用于查询条件封装，生成 sql 的 where 条件
+    * QueryWrapper ： 查询条件封装
+    * UpdateWrapper ： Update 条件封装
+    * AbstractLambdaWrapper ： 使用Lambda 语法
+      * LambdaQueryWrapper ：用于Lambda语法使用的查询Wrapper
+      * LambdaUpdateWrapper ： Lambda 更新封装Wrapper
+
+#### QueryWrapper
+
+##### 组装查询条件
+
+~~~java
+@Repository
+//强迫症，不想看到红线的解决方法
+//泛型就是操作的实体类的类型
+public interface UserMapper extends BaseMapper<User> {
+}
+~~~
+
+
+
+~~~java
+@Test
+public void test01(){
+    //查询用户名包含a，年龄在20-30之间，邮箱信息不为null的用户信息
+    QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+    //column写的不是实体类中的属性名，而是数据库中的字段名
+    //SELECT uid AS id,user_name AS name,age,email,is_deleted FROM t_user WHERE 	    is_deleted=0 AND
+    // (user_name LIKE ? AND age BETWEEN ? AND ? AND email IS NOT NULL)
+    queryWrapper
+        .like("user_name","a")
+        .between("age",20,30)
+        .isNotNull("email");
+    List<User> list = userMapper.selectList(queryWrapper);
+    list.forEach(System.out::println);
+}
+~~~
+
+
 
 ### 常用注解
 
@@ -444,6 +491,61 @@ public void testSaveBatch(){
 
 **添加位置**：是在SpringBoot启动类上面添加。
 
+#### @TableName
+
+[@TableName注解及属性](https://blog.csdn.net/hzwrrr/article/details/118189748)
+
+* 用来设置实体类所对应的表名。
+
+* @TableName 注解用来将指定的数据库表和 JavaBean 进行映射。
+* 这个注解也可以用于字段
+
+#### @TableId(设置主键映射)
+
+* mybatis-plus只能默认将id作为主键，换成例如uid就不行了，使用@TableId注解解决此问题
+
+* 这个注解主要用于对应数据库表的实体类中的主键属性。
+
+##### value属性
+
+* 指定数据表主键字段名称，不是必填的，默认为空字符串。
+
+* 比如User类主键名叫id，而MySQL数据库主键叫uid,设置此属性可解决
+
+  ~~~java
+  @TableId(value = "uid")
+  private Long id;
+  ~~~
+
+##### type属性
+
+* 指定数据表主键类型，如：ID自增、UUID等。该属性的值是一个 IdType 枚举类型，默认为 IdType.NONE。
+
+* MyBatis-Plus默认生成主键的策略就是雪花算法，我们不仅要在数据库中设置主键递增，也要在代码中设置，否则无法递增，仍是雪花算法。
+
+  ~~~java
+  @TableId(value = "uid" ,type= IdType.AUTO)
+  private Long id;
+  ~~~
+
+#### @TableField(设置普通字段映射)
+
+mybatis-plus里面有一个默认配置，可以自动将下划线转换为相应的驼峰
+
+* 如果实体类中的属性名和字段名不一致的情况，会出现什么问题呢？
+  * 情况一：若实体类中的属性使用的是驼峰命名风格，而表中的字段使用的是下划线命名风格。例如实体类属性userName，表中字段user_name此时MyBatis-Plus会自动将下划线命名风格转化为驼峰命名风格
+    相当于在MyBatis中配置
+  * 情况二：若实体类中的属性和表中的字段不满足情况一，例如实体类属性name，表中字段username
+    此时需要在实体类属性上使用@TableField("username")设置属性所对应的字段名
+
+#### @TableLogic(逻辑删除)
+
+* 物理删除：真实删除，将对应数据从数据库中删除，之后查询不到此条被删除的数据
+* 逻辑删除：假删除，将对应数据中代表是否被删除字段的状态修改为“被删除状态”，之后在数据库
+  中仍旧能看到此条数据记录
+
+使用场景：可以进行数据恢复
+
 ### 博文
 
 [关于mybatis-plus中Service和Mapper的分析](https://zhuanlan.zhihu.com/p/114451975)
@@ -481,3 +583,13 @@ public void testSaveBatch(){
 - 对象 `Wrapper` 为 [条件构造器](https://link.zhihu.com/?target=https%3A//mp.baomidou.com/guide/wrapper.html)
 
 最后本文还是比较水的，只是简单的看了一下结构而已，没有太多的深入，总结一下，以我平时粘贴复制的经验来看，Service虽然加入了数据库的操作，但还是以业务功能为主，而**更加复杂的SQL查询，还是要靠Mapper对应的XML文件里去编写SQL语句**。
+
+#### mybatis-plus中 自定义功能(如继承baseMapper的mapper)和wrapper(条件构造器)的区别
+
+在mybatis-plus中，自定义功能和Wrapper（条件构造器）是两个不同的概念，它们有各自的使用场景和优势。
+
+* 自定义功能（自定义BaseMapper）主要是指在BaseMapper或IService的基础上添加一些通用的查询、插入、更新、删除等操作，这样在不同的Mapper中就可以共享这些通用的操作，避免重复编写代码。这种方式的主要优势在于可以**将一些常用的操作封装起来**，提高代码的可重用性和可维护性。
+
+* 而Wrapper（条件构造器）主要是用于**构建查询条件**，它可以通过链式编程的方式来创建复杂的查询条件，使得代码更加简洁和易读。Wrapper的优势在于可以方便地创建复杂的查询条件，避免了手动拼接SQL语句的繁琐和易错性。
+
+因此，自定义功能和Wrapper的区别在于它们的使用场景和目的不同。自定义功能主要用于封装通用的操作，提高代码的可重用性和可维护性；而Wrapper主要用于构建查询条件，使得代码更加简洁和易读。在实际开发中，可以根据具体的需求和情况选择使用哪种方式。
