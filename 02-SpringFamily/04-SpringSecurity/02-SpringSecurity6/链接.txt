@@ -1,4 +1,11 @@
+这个不是尚硅谷或黑马的视频，是Up主：程序员一灯，讲的还是不错的。三连了，但是代码淘宝没有买。
+
 https://www.bilibili.com/video/BV1kj41167rK?p=1
+
+语雀笔记后端：https://www.yuque.com/chengxuyuanyideng/prp17u
+
+语雀笔记前端：https://www.yuque.com/chengxuyuanyideng/bu4rdb/phkkedz755f3z30a
+(后端的我摘抄了一份，前端的我就没管了)
 
 和Spring6进行配套。
 
@@ -6,6 +13,8 @@ https://www.bilibili.com/video/BV1kj41167rK?p=1
 
 我发现这个课程代码资料还要钱，淘宝10块钱。。。。。。
 
-我到时候看一下这个视频，代码能不能手敲。
+我到时候看一下这个视频，代码能不能手敲。——好像可以手敲，我先敲敲。
 
-不能手敲就算了，这钱完全没必要花，看别的视频就好了。
+
+
+第1-5集看完——23-09-28
