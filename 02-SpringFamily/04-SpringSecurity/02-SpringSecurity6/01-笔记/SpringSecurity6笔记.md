@@ -6,7 +6,7 @@
 >
 > 权限框架本质上就是过滤器，如果学SpringSecurity吃力，就回去再好好看一下Servlet过滤器。
 
-## SpringSecurity简介
+## 简介
 
 > 早期都是XML配置，学习成本很高，自从出了SpringBoot版本之后，又火起来了。
 
@@ -294,7 +294,7 @@ Spring Security一般流程为：
 - 有更强大的spring社区进行支持；
 - 支持第三方的 oauth 授权，官方网站：[spring-security-oauth](https://spring.io/projects/spring-security-oauth)
 
-## SpringSecurity 第一个项目
+## 第一个项目
 
 ### 创建一个SpringBoot项目 
 
@@ -417,7 +417,7 @@ spring:
 
 http://localhost:8080/logout
 
-## SpringSecurity 自定义登录页面
+## 自定义登录页面
 
 ### 配置
 
@@ -526,7 +526,7 @@ public class LoginController {
 </html>
 ~~~
 
-## Spring Security 前后端分离认证
+## 前后端分离认证
 
 我们初步引入了Spring Security，并使用其默认生效的HTTP基本认证来保护URL资源，本章我们使用表单认证来保护URL资源。
 
@@ -617,4 +617,733 @@ npm install vue-router@4
 npm install axios
 ~~~
 
-## Spring Security 认证过程源码分析
+## 认证过程源码分析
+
+### 项目启动
+
+我们在前面有了解到可以在application.yml中配置用户名密码，那么可以猜想：肯定是在项目启动的时候加载的，我们通过鼠标点击
+
+![](SpringSecurity6笔记/07.png)
+
+进入SecurityProperties，我们在User中的getName上打断点，这样项目启动的时候就可以走到这里
+
+![](SpringSecurity6笔记/08.png)
+
+之后我们通过点击：Drop Frame可以往回走进入如下方法：
+
+![](SpringSecurity6笔记/09.png)
+
+### InMemoryUserDetailsManager
+
+我们进入该类中找到如下方法：loadUserByUsername是登录的时候实际的查询账号密码比对的方法
+
+![](SpringSecurity6笔记/10.png)
+
+### 访问登录
+
+当我们知道loadUserByUsername方法后，打断点启动项目，登录
+
+会发现该方法被调用，我们还是点击Drop Frame回退！
+
+![](SpringSecurity6笔记/11.png)
+
+### DaoAuthenticationProvider
+
+![](SpringSecurity6笔记/12.png)
+
+![](SpringSecurity6笔记/13.png)
+
+### AbstractUserDetailsAuthenticationProvider
+
+![](SpringSecurity6笔记/14.png)
+
+![](SpringSecurity6笔记/15.png)
+
+### ProviderManager
+
+![](SpringSecurity6笔记/16.png)
+
+![](SpringSecurity6笔记/17.png)
+
+### 重要：UsernamePasswordAuthenticationFilter
+
+![](SpringSecurity6笔记/18.png)
+
+![](SpringSecurity6笔记/19.png)
+
+### AbstractAuthenticationProcessingFilter
+
+![](SpringSecurity6笔记/20.png)
+
+![](SpringSecurity6笔记/21.png)
+
+### FilterChainProxy
+
+![](SpringSecurity6笔记/22.png)
+
+### LogoutFilter
+
+![](SpringSecurity6笔记/23.png)
+
+### HeaderWriterFilter
+
+![](SpringSecurity6笔记/24.png)
+
+### 重要：OncePerRequestFilter
+
+![](SpringSecurity6笔记/25.png)
+
+### WebSecurity
+
+通过查询FilterChainProxy可以搜索到在WebSecurity的performBuild方法中调用
+
+![](SpringSecurity6笔记/26.png)
+
+## 认证与授权
+
+> 实际开发中，我们把角色/权限配置到数据库中的(当然也有人写在代码里面)
+
+在前面的章节中，我们沿用了Spring Security默认的安全机制：仅有一个用户，仅有一种角色。在实际开发中，这自然是无法满足需求的。本章将更加深入地对Spring Security迚行配置，且初步使用授权机制。
+
+![](SpringSecurity6笔记/34.png)
+
+### 默认数据库模型的认证与授权
+
+#### 资源准备
+
+首先，在controller包下新建三个控制器，如图所示。
+
+![](SpringSecurity6笔记/27.png)
+
+其次，分别建立一些测试路由。
+
+~~~java
+package com.boot.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/admin/api")
+public class AdminController {
+
+    @GetMapping("/hello")
+    public String hello(){
+        return "hello,admin";
+    }
+}
+~~~
+
+~~~java
+package com.boot.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/app/api")
+public class AppController {
+
+    @GetMapping("/hello")
+    public String hello(){
+        return "hello,app";
+    }
+}
+~~~
+
+~~~java
+package com.boot.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/user/api")
+public class UserController {
+
+    @GetMapping("/hello")
+    public String hello(){
+        return "hello,user";
+    }
+}
+~~~
+
+假设在/admin/api/下的内容是系统后台管理相关的API，在/app/api 下的内容是面向客户端公开访问的API，在/user/api/下的内容是用户操作自身数据相关的API；显然，/admin/api必须拥有管理员权限才能进行操作，而/user/api必须在用户登录后才能进行操作。
+
+#### 资源授权的配置
+
+为了能正常访问前面的路由，我们需要进一步地配置Spring Security。
+
+~~~java
+package com.boot.config;
+
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.util.StringUtils;
+
+import java.util.List;
+
+import static org.springframework.security.config.Customizer.withDefaults;
+
+//@EnableWebSecurity:开启SpringSecurity 之后会默认注册大量的过滤器servlet filter
+//过滤器链【责任链模式】SecurityFilterChain
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        //authorizeHttpRequests:针对http请求进行授权配置
+        //login登录页面需要匿名访问
+        //permitAll:具有所有权限 也就可以匿名可以访问
+        //anyRequest:任何请求 所有请求
+        //authenticated:认证【登录】
+        http.authorizeHttpRequests(authorizeHttpRequests->
+                authorizeHttpRequests
+                        //********************************角色****************************************
+                        //.requestMatchers("/admin/api").hasRole("admin") //必须有admin角色才能访问到
+                        //.requestMatchers("/user/api").hasAnyRole("admin","user") // /user/api:admin、user都是可以访问
+
+                        //********************************权限****************************************
+                        .requestMatchers("/admin/api").hasAuthority("admin:api") //必须有admin:api权限才能访问到
+                        .requestMatchers("/user/api").hasAnyAuthority("admin:api","user:api") //有admin:api、user:api权限能访问到
+
+
+                        //********************************匹配模式****************************************
+                        .requestMatchers("/admin/api/?").hasAuthority("admin:api") //必须有admin:api权限才能访问到
+                        .requestMatchers("/user/api/my/*").hasAuthority("admin:api") //必须有admin:api权限才能访问到
+
+                        .requestMatchers("/admin/api/a/b/**").hasAuthority("admin:api") //必须有admin:api权限才能访问到
+
+                        .requestMatchers("/app/api").permitAll() //匿名可以访问
+
+                        .requestMatchers("/login").permitAll()
+                        .anyRequest().authenticated()
+        );
+        //现在我们借助异常处理配置一个未授权页面:【实际上是不合理的 我们应该捕获异常信息 通过异常类型来判断是什么异常】
+        http.exceptionHandling(e->e.accessDeniedPage("/noAuth"));
+
+        //http:后面可以一直点 但是太多内容之后不美观
+        //loginPage:登录页面
+        //loginProcessingUrl:登录接口 过滤器
+        //defaultSuccessUrl:登录成功之后访问的页面
+        http.formLogin(formLogin->
+                formLogin
+                        .loginPage("/login").permitAll()
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/index")
+
+        );
+
+        //Customizer.withDefaults():关闭
+        //http.csrf(Customizer.withDefaults());//跨域漏洞防御:关闭
+        //http.csrf(e->e.disable());
+        //http.csrf(crsf->crsf.disable());//相当于 http.csrf(Customizer.withDefaults());
+        http.csrf(withDefaults());//封装的太过于抽象比较难以阅读代码【装X】
+
+        //退出
+        http.logout(logout->logout.invalidateHttpSession(true));
+
+        return http.build();
+    }
+
+    @Bean
+    public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
+        //admin用户具有admin、user角色
+        //UserDetails user1 = User.withUsername("admin").password("123456").roles("admin","user").build();
+        //UserDetails user2 = User.withUsername("user").password("123456").roles("user").build();
+
+        UserDetails user1 = User.withUsername("admin").password("123456").authorities("admin:api","user:api").build();
+        UserDetails user2 = User.withUsername("user").password("123456").authorities("user:api").build();
+
+        return new InMemoryUserDetailsManager(user1,user2);
+    }
+
+    /**
+     * PasswordEncoder:加密编码
+     * 实际开发中开发环境一般是明文加密 在生产环境中是密文加密 也就可以可以配置多种加密方式
+     *
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        //明文加密
+        return NoOpPasswordEncoder.getInstance();
+    }
+}
+~~~
+
+antMatchers（）是一个采用ANT模式的URL匹配器。ANT模式使用？匹配任意单个字符，使用* 匹配0或任意数量的字符，使用**匹配0或者更多的目录。antMatchers（"/admin/api/**"）相当于匹配了/admin/api/下的所有API。
+
+| ant匹配模式 |                   |
+| ----------- | ----------------- |
+| ?           | 任意单个字符      |
+| *           | 0到任意数量的字符 |
+| **          | 0到任意个目录     |
+
+此处我们指定当其必须为ADMIN角色时才能访问，/user/api/与之同理。/app/api/下的API会调用permitAll（）公开其权限。
+
+授权相关的配置看起来并不复杂，但似乎缺少了什么？这里暂且忽略。
+
+重启服务，尝试访问localhost:8080/app/api/hello，页面打印“hello,app”，验证了/app/api/下的服务确实是权限公开的。接着访问localhost:8080/user/api/hello，这次需要登录了。我们尝试输入前面在application.yml中定义的用户名和密码，登录之后，然而，如图所示。
+
+![](SpringSecurity6笔记/28.png)
+
+页面显示403错误，表示该用户授权失败（401代表该用户认证失败）。也就是说，本次访问已经通过了认证环节，只是在授权的时候被驳回了。认证环节是没有问题的，因为Spring Security默认的用户角色正是user。
+
+HTTP状态码（HTTP Status Code）是由RFC 2616定义的一种用来表示一个HTTP请求响应状态的规范，由3位数字组成。通常用2XX表示本次操作成功，用4XX表示是客户端导致的失败，用5XX表示是服务器引起的错误。
+
+#### 基于内存的多用户支持
+
+到目前为止，我们仍然只有一个可登录的用户，怎样引入多用户呢？非常简单，我们只需实现一个自定义的UserDetailsService即可。
+
+~~~java
+public UserDetailsService userDetailsService(){
+    InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+
+    manager.createUser(User.withUsername("test").password(new BCryptPasswordEncoder().encode("123456")).roles("USER").build());
+    manager.createUser(User.withUsername("admin").password(new BCryptPasswordEncoder().encode("123456")).roles("ADMIN").build());
+    
+    return manager;
+}
+
+@Override
+protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth.userDetailsService(userDetailsService()).passwordEncoder(new BCryptPasswordEncoder());
+}
+~~~
+
+或者
+
+~~~java
+@Override
+protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth.inMemoryAuthentication().passwordEncoder(new BCryptPasswordEncoder())
+            .withUser("test").password(new BCryptPasswordEncoder().encode("123456")).roles("USER")
+            .and()
+            .withUser("admin").password(new BCryptPasswordEncoder().encode("123456")).roles("ADMIN");
+}
+~~~
+
+Spring Security支持各种来源的用户数据，包括内存、数据库、LDAP等。它们被抽象为一个UserDetailsService接口，任何实现了UserDetailsService 接口的对象都可以作为认证数据源。在这种设计模式下，Spring Security显得尤为灵活。
+
+InMemoryUserDetailsManager是UserDetailsService接口中的一个实现类，它将用户数据源寄存在内存里，在一些不需要引入数据库这种重数据源的系统中很有帮助。
+
+这里仅仅调用createUser（）生成两个用户，并赋予相应的角色。它会工作得很好，多次重启服务也不会出现问题。为什么要强调多次重启服务呢？稍后揭晓答案。
+
+#### 基于默认数据库模型的认证与授权
+
+除了InMemoryUserDetailsManager,Spring Security还提供另一个UserDetailsService实现类：JdbcUserDetailsManager。
+
+JdbcUserDetailsManager帮助我们以JDBC的方式对接数据库和Spring Security，它设定了一个默认的数据库模型，只要遵从这个模型，在简便性上，JdbcUserDetailsManager甚至可以媲美InMemoryUserDetailsManager。
+
+##### 数据库准备
+
+MySQL的安装这里不赘述，首先在工程中引入JDBC和MySQL两个必要依赖。
+
+~~~java
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-jdbc</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+</dependency>
+~~~
+
+接着在application.yml中配置数据库连接参数。
+
+~~~java
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/springsecurity
+    username: root
+    password: root
+~~~
+
+这里连接的数据库名为springsecurity（不配置driverClassName也不会出现问题，因为Spring Boot会自动根据URL去推断），用户名、密码分别为root和root，读者可根据实际情况，自行修改。
+
+**前面介绍过，JdbcUserDetailsManager设定了一个默认的数据库模型，Spring Security将该模型定义在/org/springframework/security/core/userdetails/jdbc/users.ddl内。**
+
+在idea中双击shift键，搜索users.ddl即可
+
+~~~java
+create table users(username varchar_ignorecase(50) not null primary key,password varchar_ignorecase(500) not null,enabled boolean not null);
+create table authorities (username varchar_ignorecase(50) not null,authority varchar_ignorecase(50) not null,constraint fk_authorities_users foreign key(username) references users(username));
+create unique index ix_auth_username on authorities (username,authority);
+~~~
+
+JdbcUserDetailsManager需要两个表，其中users表用来存放用户名、密码和是否可用三个信息，authorities表用来存放用户名及其权限的对应关系。
+
+将其复制到MySQL命令窗口执行时，会报错，因为该语句是用hsqldb创建的，而MySQL不支持
+
+varchar_ignorecase这种类型。怎么办呢？很简单，将varchar_ignorecase改为MySQL支持的varchar即可。
+
+~~~java
+create table users(username varchar(50) not null primary key,password varchar(500) not null,enabled boolean not null);
+create table authorities (username varchar(50) not null,authority varchar(50) not null,constraint fk_authorities_users foreign key(username) references users(username));
+create unique index ix_auth_username on authorities (username,authority);
+~~~
+
+![](SpringSecurity6笔记/29.png)
+
+##### 编码实现
+
+下面构建一个JdbcUserDetailsManager实例，让Spring Security使用数据库来管理用户。
+
+~~~java
+@Autowired
+private DataSource dataSource;
+
+@Override
+protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    //明文密码需要专门指定加密方式为NoOpPasswordEncoder
+    PasswordEncoder passwordEncoder = NoOpPasswordEncoder.getInstance();
+    
+    JdbcUserDetailsManager manager = new JdbcUserDetailsManager();
+    manager.setDataSource(dataSource);
+
+    //初始化账号密码:只需要第一次使用
+    manager.createUser(User.withUsername("user").password("123456").roles("USER").build());
+    manager.createUser(User.withUsername("admin").password("123456").roles("ADMIN","USER").build());
+
+    auth.userDetailsService(manager).passwordEncoder(passwordEncoder);
+}
+~~~
+
+启动项目查看数据库：
+
+![](SpringSecurity6笔记/30.png)
+
+JdbcUserDetailsManager与InMemoryUserDetailsManager在用法上没有太大区别，只是多了设置DataSource 的环节。Spring Security 通过DataSource 执行设定好的命令。例如，此处的createUser函数实际上就是执行了下面的SQL语句。
+
+查看 JdbcUserDetailsManager 的源代码可以看到更多定义好的 SQL 语句，诸如deleteUserSql、updateUserSql等，这些都是JdbcUserDetailsManager与数据库实际交互的形式。当然，JdbcUserDetailsManager也允许我们在特殊情况下自定义这些 SQL	语句，如有必要，调用对应的setXxxSql方法即可。
+
+authorities 表的authority 字段存放的是前面设定的角色，只是会被添上“ROLE_”前缀。
+
+访问系统：
+
+| 账号  | 权限       | 路径             | 是否                               |
+| ----- | ---------- | ---------------- | ---------------------------------- |
+| user  | USER       | /admin/api/hello | type=Forbidden, status=403：被拒绝 |
+| user  | USER       | /user/api/hello  | 正常访问                           |
+| admin | ADMIN,USER | /admin/api/hello | 正常访问                           |
+| admin | ADMIN,USER | /user/api/hello  | 正常访问                           |
+
+到目前为止，一切都工作得很好，但是只要我们重启服务，应用就会报错。这是因为users表在创建语句时，username字段为主键，主键是唯一不重复的，但重启服务后会再次创建admin和user，导致数据库报错（在内存数据源上不会出现这种问题，因为重启服务后会清空username字段中的内容）。所以如果需要在服务启动时便生成部分用户，那么建议先判断用户名是否存在。
+
+~~~java
+//初始化账号密码:只需要第一次使用
+if(!manager.userExists("user")) {
+    manager.createUser(User.withUsername("user").password("123456").roles("USER").build());
+}
+if(!manager.userExists("admin")) {
+    manager.createUser(User.withUsername("admin").password("123456").roles("ADMIN", "USER").build());
+}
+~~~
+
+在2.2节的自定义表单登录页中，WebSecurityConfigurer Adapter定义了三个configure。
+
+~~~java
+protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+	this.disableLocalConfigureAuthenticationBldr = true;
+}
+
+@Override
+public void configure(WebSecurity web) throws Exception {
+    
+}
+
+protected void configure(HttpSecurity http) throws Exception {
+    this.logger.debug("Using default configure(HttpSecurity). "
+            + "If subclassed this will potentially override subclass configure(HttpSecurity).");
+    http.authorizeRequests((requests) -> requests.anyRequest().authenticated());
+    http.formLogin();
+    http.httpBasic();
+}
+~~~
+
+我们只用到了一个参数，用来接收 HttpSecurity对象的配置方法。另外两个参数也有各自的用途，其中，AuthenticationManagerBuilder的configure同样允许我们配置认证用户。
+
+~~~java
+@Override
+protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth.inMemoryAuthentication().passwordEncoder(new BCryptPasswordEncoder())
+            .withUser("test").password(new BCryptPasswordEncoder().encode("123456")).roles("USER")
+            .and()
+            .withUser("admin").password(new BCryptPasswordEncoder().encode("123456")).roles("ADMIN");
+}
+~~~
+
+使用方法大同小异，这里不再赘述。
+
+当使用Spring Security默认数据库模型应对各种用户系统时，难免灵活性欠佳。尤其是在对现有的系统做Spring Security嵌入时，原本的用户数据已经固定，为了适配Spring Security而在数据库层面进行修改显然得不偿失。强大而灵活的Spring Security对这方面进行了改进。
+
+### 自定义数据库模型的认证与授权
+
+让Spring Security适应系统，而非让系统适应Spring Security，是Spring Security框架开发者和使用者的共识。
+
+下面我们将使用自定义数据库模型接入Spring Security，数据库依然是MySQL，持久层框架则选用MyBatisPlus（倾向于使用JPA的读者也可以自行选型，它们在Spring Security部分的实践是一样的）。旁枝末节的知识会点到即止，我们重点介绍Spring   Security相关的内容，所以期望读者自行阅读相关资料，也可以选择暂时略过。
+
+#### 实现UserDetails
+
+在3.1节，我们使用了InMemoryUserDetailsManager和JdbcUserDetailsManager两个UserDetailsService 实现类。生效方式也很简单，只需加入Spring 的IoC 容器，就会被Spring Security自动发现并使用。自定义数据库结构实际上也仅需实现一个自定义的UserDetailsService。
+
+UserDetailsService仅定义了一个loadUserByUsername方法，用于获取一个UserDetails对象。UserDetails对象包含了一系列在验证时会用到的信息，包括用户名、密码、权限以及其他信息，Spring Security会根据这些信息判定验证是否成功。
+
+~~~java
+package org.springframework.security.core.userdetails;
+
+public interface UserDetailsService {
+	UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
+}
+~~~
+
+~~~java
+package org.springframework.security.core.userdetails;
+
+import java.io.Serializable;
+import java.util.Collection;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+
+public interface UserDetails extends Serializable {
+
+	Collection<? extends GrantedAuthority> getAuthorities();
+
+	String getPassword();
+
+	String getUsername();
+
+	boolean isAccountNonExpired();
+
+	boolean isAccountNonLocked();
+
+	boolean isCredentialsNonExpired();
+
+	boolean isEnabled();
+
+}
+~~~
+
+也就是说，不管数据库结构如何变化，只要能构造一个UserDetails即可，下面就来实现这个过程。
+
+##### 数据库准备
+
+设计一个自定义的数据库结构。
+
+~~~java
+CREATE TABLE `t_user` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `username` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '用户名',
+  `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '密码',
+  `enabled` tinyint DEFAULT '1' COMMENT '用户是否可用',
+  `roles` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '用户角色：多个之间逗号隔开',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='用户表';
+~~~
+
+我们把用户信息和角色放在同一张表中，不再是Spring Security默认的分开形式。roles字段设定为text类型，多个角色之间用逗号隔开。建议在username字段上建立索引，以提高搜索速度。
+
+接下来插入两条记录，显示如图所示。
+
+~~~java
+INSERT INTO `springsecurity`.`t_user` (`id`, `username`, `password`, `enabled`, `roles`) VALUES ('1', 'admin', '123456', '1', 'ROLE_ADMIN,ROLE_USER');
+INSERT INTO `springsecurity`.`t_user` (`id`, `username`, `password`, `enabled`, `roles`) VALUES ('2', 'user', '123456', '1', 'ROLE_USER');
+~~~
+
+##### 编码实现
+
+当数据库结构和数据准备完毕时，即可编写对应的User实体。
+
+让User实体继承UserDetails。
+
+~~~java
+package com.boot.entity;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
+
+import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+@TableName(value ="t_user")
+@Data
+public class User implements Serializable, UserDetails {
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
+
+    @TableId(value = "id",type = IdType.AUTO)
+    private Long id;
+
+    @TableField(value = "username")
+    private String username;
+
+    @TableField(value = "password")
+    private String password;
+
+    @TableField(value = "roles")
+    private String roles;
+
+    @TableField(value = "enabled")
+    private Boolean enabled;
+
+    @TableField(exist = false)
+    private List<GrantedAuthority> authorities;
+
+    @Override
+    public List<GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(List<GrantedAuthority> authorities) {
+        this.authorities = authorities;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+}
+~~~
+
+实现UserDetails定义的几个方法：
+
+◎ isAccountNonExpired、isAccountNonLocked 和isCredentialsNonExpired 暂且用不到，统一返回
+
+true，否则Spring Security会认为账号异常。
+
+◎ isEnabled对应enable字段，将其代入即可。
+
+◎ getAuthorities方法本身对应的是roles字段，但由于结构不一致，所以此处新建一个，并在后续进行填充。
+
+#### 实现UserDetailsService
+
+##### 数据持久层准备
+
+当准备好UserDetails之后，使用数据库持久层框架读取数据并填充对象。首先引入MyBatisPlus。
+
+~~~java
+<dependency>
+    <groupId>com.baomidou</groupId>
+    <artifactId>mybatis-plus-boot-starter</artifactId>
+    <version>3.4.3</version>
+</dependency>
+~~~
+
+前面在配置文件中曾写过数据库相关的配置，这里沿用即可。
+
+~~~yml
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/springsecurity
+    username: root
+    password: root
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+~~~
+
+##### 编码实现
+
+当数据持久层准备完成后，我们开始编写UserDetailsService。
+
+~~~java
+package com.boot.service.impl;
+
+@Service
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username",username);
+        User user = userMapper.selectOne(queryWrapper);
+
+        if(user == null){
+            throw new UsernameNotFoundException("用户名未找到!");
+        }
+
+        //将数据库中的角色拆分成SpringSecurity结构
+        user.setAuthorities(AuthorityUtils.commaSeparatedStringToAuthorityList(user.getRoles()));
+
+        return user;
+    }
+}
+~~~
+
+其中，SimpleGrantedAuthority是GrantedAuthority的一个实现类。Spring Security的权限几乎是用SimpleGrantedAuthority生成的，只要注意每种角色对应一个GrantedAuthority即可。另外，一定要在自己的UserDetailsService实现类上加入@Service注解，以便被Spring Security自动发现。
+
+至此，我们就实现了Spring Security的自定义数据库结构认证。有些读者可能会有疑问，为什么在数据库中的角色总是要添加“ROLE”前缀，在配置时却并没有“ROLE”前缀呢？
+
+![](SpringSecurity6笔记/31.png)
+
+查看源码即可找到答案。
+
+进入hasRole方法内部：
+
+![](SpringSecurity6笔记/32.png)
+
+this.rolePrefix的值可以通过debug查看，往上看到构造函数，debug发现是会带上:ROLE_
+
+![](SpringSecurity6笔记/33.png)
+
+如果不希望匹配这个前缀，那么改为调用hasAuthority方法即可。不需要前缀。
+
+~~~java
+private static String hasAuthority(String authority) {
+    return "hasAuthority('" + authority + "')";
+}
+~~~
+
+
+
+
+
+
+
