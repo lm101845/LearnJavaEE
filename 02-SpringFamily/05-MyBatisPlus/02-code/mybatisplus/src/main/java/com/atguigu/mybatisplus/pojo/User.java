@@ -39,7 +39,11 @@ public class User {
     //数据库中使用的字段名是user_name,使用驼峰，可以自动识别
     //mybatis-plus里面有一个默认配置，可以自动将下划线转换为相应的驼峰
     private Integer age;
+
     private String email;
+
+    private Enum sex;
+
     //逻辑删除
     @TableLogic
     private Integer isDeleted;

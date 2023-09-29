@@ -761,6 +761,16 @@ mybatis-plus里面有一个默认配置，可以自动将下划线转换为相�
 
 使用场景：可以进行数据恢复
 
+#### @Version
+
+[事务和锁机制是什么关系？ 开启事务就自动加锁了吗？](https://www.cnblogs.com/leijiangtao/p/11911644.html)
+
+标识乐观锁版本号字段
+
+####  @EnumValue
+
+将注解所标识的属性的值存储到数据库中。
+
 ### 博文
 
 [关于mybatis-plus中Service和Mapper的分析](https://zhuanlan.zhihu.com/p/114451975)

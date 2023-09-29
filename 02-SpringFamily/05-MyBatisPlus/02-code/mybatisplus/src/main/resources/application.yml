@@ -5,7 +5,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     # 配置连接数据库信息
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/mybatis_plus?serverTimezone=GMT%2B8&characterEncoding=utf-8&useSSL=false
+    url: jdbc:mysql://localhost:3306/mybatis_plus?serverTimezone=GMT%2B8&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
     #mysql8中必须要配时区serverTimezone
     username: root
     password: 123456
@@ -17,7 +17,14 @@ mybatis-plus:
     db-config:
 #      设置实体类所对应表的统一前缀
       table-prefix: t_
-      id-type: auto
 #      设置统一的主键生成策略
 #      auto表示自动递增
+#      MyBatisPlus默认并没有开启二级缓存
+      id-type: auto
+#    配置类型别名所对应的包
+  type-aliases-package: com.atguigu.mybatisplus.pojo
+#  扫描通用枚举的包
+  type-enums-package: com.atguigu.mybatisplus.enums
+#  Deprecated configuration property 'mybatis-plus.type-enums-package' 不再需要这个配置，放心删除
+
 
