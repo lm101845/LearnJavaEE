@@ -422,3 +422,41 @@ Jackson是一个处理JSON的类库，不过它也通过jackson-dataformat-xml�
 
 * IOC容器中，只能存在类对应的bean，而不能存在接口对应的bean
 * 有了MyBatis-Plus以后，绝大多数情况下就不用我们自己去写SQL语句了，它给我们提供了模板mapper，我们调用模板Mapper即可。
+
+## 博文
+
+### VO、DTO、DO、POJO、PO的区别和概念
+
+* 概念：
+  * **VO**（View Object）：**视图对象**，用于页面展示层，它的作用是把某个指定页面（或组件）的数据封装起来，**传输到前端页面**上。
+  * **DTO**（Data Transfer Object）：**数据传输对象**，通常作为方法入参来使用。在此仅泛指用于**展示层**（如Controller）与**服务层**（如service/Impl）之间的数据传输对象。对其J2EE设计模式内的作用不做深入探讨。
+  * **DO**（Domain Object）：**领域对象**（或称实体对象），就是从现实世界中抽象出来的有形或无形的业务实体。
+  * **POJO**（Plain Ordinary Java Object）：简单的Java对象，实际就是**普通JavaBeans**，是为了避免和EJB混淆所创造的简称，它不包含业务逻辑或持久逻辑等。POJO对象有时也被称为Data对象，大量应用于表现现实中的对象。**一个POJO持久化以后就是PO**。
+  * **PO**（Persistent Object）：**持久化对象**，通常与持久层（DAO，通常是关系型数据库）的数据结构形成一一对应的映射关系。
+
+* 区别：
+
+  * 这几个概念所应用的场景不同，在三层架构中各自的位置有所不同：
+
+  前端发起请求或提交表单，请求中或表单里的数据传输到后端，在展示层被匹配为VO。展示层把VO转换为服务层对应方法所需要的DTO，传送给服务层。服务层根据DTO的数据构造或重建一个DO，然后再调用DO的业务方法来完成具体的业务。然后服务层再把DO转换为持久层对应的PO，调用持久层的持久化方法，把PO传递给它，完成持久化操作。
+
+  * **VO与DTO的区别**：DTO代表服务层需要接收的数据和返回的数据，而VO代表展示层需要显示的数据。
+  * **DTO与DO的区别**：首先是概念上的区别，DTO是展示层和服务层之间的数据传输对象，而DO是对现实世界各种业务角色的抽象，这就引出了两者在数据上的区别。例如：UserInfo（DO）和User（DTO），对于一个getUser()方法来说，本质上它永远不应该返回用户的密码，因此UserInfo至少比User少一个password的字段。而在领域驱动设计中，正如上文描述DO不是简单的POJO，重点在于领域业务逻辑。
+  * **DO与PO的区别**：DO和PO在绝大部分情况下是一一对应的，**PO是只含有get/set方法的POJO**，但某些场景还是能反映出两者在概念上存在本质的区别，PO是需要**持久化**的，与**数据库**息息相关，而DO是**业务**上的，具有**业务逻辑**。
+
+### 架构分析
+
+实体类这一层，有的开发写成pojo，有的写成model，也有domain，也有dto（这里做参数验证，比如password不能为空等），实体类如果你不懂什么东西的话，那你就想成是范围。
+
+mapper 是Mybatis 操作数据库的那一层，就是dao层。
+
+service包含了serviceImpl（service接口的实现类） 是提供给controller 使用的，针对于某些业务将 dao 的对于某些表的crud进行组合，也就是说间接的和数据库打交道。
+
+controller 通过调用service来完成业务逻辑。
+
+### SpringBoot中mapper.xml文件存放的两种位置
+
+[SpringBoot中mapper.xml文件存放的两种位置](https://blog.csdn.net/nulinuligengnuli/article/details/119353021)
+
+
+
