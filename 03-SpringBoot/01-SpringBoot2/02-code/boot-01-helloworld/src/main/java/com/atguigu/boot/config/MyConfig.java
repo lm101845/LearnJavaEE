@@ -1,6 +1,6 @@
 package com.atguigu.boot.config;
 
-import ch.qos.logback.core.db.DBHelper;
+//import ch.qos.logback.core.db.DBHelper;
 import com.atguigu.boot.bean.Car;
 import com.atguigu.boot.bean.Pet;
 import com.atguigu.boot.bean.User;
@@ -28,7 +28,7 @@ import org.springframework.context.annotation.*;
  * <p>
  * 5、@ImportResource("classpath:beans.xml")导入Spring的配置文件，
  */
-@Import({User.class, DBHelper.class})
+//@Import({User.class, DBHelper.class})
 @Configuration(proxyBeanMethods = true)   //默认为true，单实例
 //@Configuration(proxyBeanMethods = false)
 //@ConditionalOnBean(name="tom")
@@ -41,21 +41,21 @@ import org.springframework.context.annotation.*;
 //2、把这个Car这个组件自动注册到容器中
 public class MyConfig {
     //@ConditionalOnBean(name="tom")
-    @Bean
-    //@Bean注解给容器中添加组件，以方法名作为组件的id，返回类型就是组件类型，方法返回的值，就是组件容器中保存的对象
-    public User user01() {
-        User zhangsan = new User("zhangsan", 18);
-        //User组件依赖了Pet组件
-        zhangsan.setPet(tom());
-        return zhangsan;
-    }
+    //@Bean
+    ////@Bean注解给容器中添加组件，以方法名作为组件的id，返回类型就是组件类型，方法返回的值，就是组件容器中保存的对象
+    //public User user01() {
+    //    User zhangsan = new User("zhangsan", 18);
+    //    //User组件依赖了Pet组件
+    //    zhangsan.setPet(tom());
+    //    return zhangsan;
+    //}
 
 
     //@Bean("tom")
-    @Bean("tom22")
-    public Pet tom() {
-        return new Pet("tom");
-    }
+    ////@Bean("tom22")
+    //public Pet tom() {
+    //    return new Pet("tom");
+    //}
 
     //@Bean
     //public CharacterEncodingFilter filter() {

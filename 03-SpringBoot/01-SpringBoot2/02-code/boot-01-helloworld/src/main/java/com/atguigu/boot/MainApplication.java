@@ -6,7 +6,7 @@ package com.atguigu.boot;
  **/
 
 
-import ch.qos.logback.core.db.DBHelper;
+//import ch.qos.logback.core.db.DBHelper;
 import com.atguigu.boot.bean.Pet;
 import com.atguigu.boot.bean.User;
 import com.atguigu.boot.config.MyConfig;
@@ -79,19 +79,19 @@ public class MainApplication {
         //DBHelper bean1 = run.getBean(DBHelper.class);
         //System.out.println(bean1);
 
-        boolean tom = run.containsBean("tom");
-        System.out.println("容器中Tom组件："+tom);  //false
-
-        boolean user01 = run.containsBean("user01");
-        System.out.println("容器中user01组件："+user01);
-
-        boolean tom22 = run.containsBean("tom22");
-        System.out.println("容器中tom22组件："+tom22);
-
-
-        boolean haha = run.containsBean("haha");
-        boolean hehe = run.containsBean("hehe");
-        System.out.println("haha："+haha);
-        System.out.println("hehe："+hehe);
+        //boolean tom = run.containsBean("tom");
+        //System.out.println("容器中Tom组件："+tom);  //false
+        //
+        //boolean user01 = run.containsBean("user01");
+        //System.out.println("容器中user01组件："+user01);
+        //
+        //boolean tom22 = run.containsBean("tom22");
+        //System.out.println("容器中tom22组件："+tom22);
+        //
+        //
+        //boolean haha = run.containsBean("haha");
+        //boolean hehe = run.containsBean("hehe");
+        //System.out.println("haha："+haha);
+        //System.out.println("hehe："+hehe);
     }
 }

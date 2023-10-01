@@ -181,6 +181,28 @@ public @interface Autowired {
 
 > 需要特别说明的是：`@Configuration`**继承**了`@Component`，这意味着@Configuration拥有@Component的全部功能，这也正是只加@Configuration，也能被Spring扫描并处理的原因。
 
+### @ConfigurationProperties
+
+[@ConfigurationProperties 注解使用姿势，这一篇就够了](https://zhuanlan.zhihu.com/p/75601572)
+
+声明组件的属性和配置文件哪些前缀开始项进行绑定。
+
+在编写项目代码时，我们要求更灵活的配置，更好的模块化整合。在 Spring Boot 项目中，为满足以上要求，我们将大量的参数配置在 application.properties 或 application.yml 文件中，通过 `@ConfigurationProperties` 注解，我们可以方便的获取这些参数值
+
+### @EnableConfigurationProperties
+
+快速注册注解。
+
+> 场景：SpringBoot默认只扫描自己主程序所在的包。如果导入第三方包，即使组件上标注了 @Component、@ConfigurationProperties 注解，也没用。因为组件都扫描不进来，此时使用这个注解就可以快速进行**属性绑定**并把组件注册进容器
+
+先说作用：
+
+@EnableConfigurationProperties注解的作用是：**使使用 @ConfigurationProperties 注解的类生效。**
+
+说明：
+
+如果一个配置类只配置@ConfigurationProperties注解，而没有使用@Component，那么在IOC容器中是获取不到properties 配置文件转化的bean。说白了 @EnableConfigurationProperties 相当于把使用  @ConfigurationProperties 的类进行了一次注入。
+
 ### @ContextConfiguration
 
 `@ContextConfiguration`这个注解通常与`@RunWith(SpringJUnit4ClassRunner.class)`联合使用用来测试。
@@ -227,6 +249,13 @@ public @interface Autowired {
 
 表明这是一个SpringBoot应用。@SpringBootApplication由三个注解组成`@SpringBootConfiguration`、`@EnableAutoConfiguration`、`@ComponentScan`。其中`@EnableAutoConfiguration`是开启SpringBoot的核心注解。
 
+> @SpringBootApplication = @SpringBootConfiguration + @EnableAutoConfiguration + @ComponentScan
+
+### @EnableAutoConfiguration
+
+EnableAutoConfiguration自动装配的作用：即把指定的类构造成对象，并放入spring容器中，使其成为bean对象，作用类似@Bean注解。
+springboot启动的时候，会扫描该项目下所有spring.factories文件。
+
 ### @Scope
 
 @Scope注解用于指定Bean的作用域
@@ -240,28 +269,6 @@ public @interface Autowired {
 * `@ConditionalOnBean`：如果容器中存在这个Bean（组件），则触发指定行为
 
 * `@ConditionalOnMissingBean`：如果容器中不存在这个Bean（组件），则触发指定行为
-
-### @ConfigurationProperties
-
-[@ConfigurationProperties 注解使用姿势，这一篇就够了](https://zhuanlan.zhihu.com/p/75601572)
-
-声明组件的属性和配置文件哪些前缀开始项进行绑定。
-
-在编写项目代码时，我们要求更灵活的配置，更好的模块化整合。在 Spring Boot 项目中，为满足以上要求，我们将大量的参数配置在 application.properties 或 application.yml 文件中，通过 `@ConfigurationProperties` 注解，我们可以方便的获取这些参数值
-
-### @EnableConfigurationProperties
-
-快速注册注解。
-
-> 场景：SpringBoot默认只扫描自己主程序所在的包。如果导入第三方包，即使组件上标注了 @Component、@ConfigurationProperties 注解，也没用。因为组件都扫描不进来，此时使用这个注解就可以快速进行**属性绑定**并把组件注册进容器
-
-先说作用：
-
-@EnableConfigurationProperties注解的作用是：**使使用 @ConfigurationProperties 注解的类生效。**
-
-说明：
-
-如果一个配置类只配置@ConfigurationProperties注解，而没有使用@Component，那么在IOC容器中是获取不到properties 配置文件转化的bean。说白了 @EnableConfigurationProperties 相当于把使用  @ConfigurationProperties 的类进行了一次注入。
 
 ### @EnableWebMvc
 
@@ -388,7 +395,7 @@ Jackson是一个处理JSON的类库，不过它也通过jackson-dataformat-xml�
 
 @ExceptionHandler可以用来统一处理方法抛出的异常
 
-## @ControllerAdvice
+### @ControllerAdvice
 
 在Spring里，我们可以使用@ControllerAdvice来声明一些全局性的东西，最常见的是结合@ExceptionHandler注解用于全局异常的处理。
 
@@ -397,6 +404,19 @@ Jackson是一个处理JSON的类库，不过它也通过jackson-dataformat-xml�
 - @ExceptionHandler注解标注的方法：用于捕获Controller中抛出的不同类型的异常，从而达到异常全局处理的目的；
 - @InitBinder注解标注的方法：用于请求中注册自定义参数的解析，从而达到自定义请求参数格式的目的；
 - @ModelAttribute注解标注的方法：表示此方法会在执行目标Controller方法之前执行 。
+
+### @ImportResource
+
+@ImportResource注解用于导入Spring的配置文件，让配置文件里面的内容生效；(就是以前写的springmvc.xml、applicationContext.xml)
+Spring Boot里面没有Spring的配置文件，我们自己编写的配置文件，也不能自动识别；
+想让Spring的配置文件生效，加载进来；@ImportResource标注在一个配置类上。
+注意！这个注解是放在主入口函数的类上，而不是测试类上
+
+不使用@ImportResource()注解，程序根本不能对我们spring的配置文件进行加载，所以我们需要将spring配置文件加载到容器里。
+
+### @Profile
+
+`@profile`注解的作用是指定类或方法在特定的 Profile 环境生效，任何`@Component`或`@Configuration`注解的类都可以使用`@Profile`注解。在使用DI来依赖注入的时候，能够根据`@profile`标明的环境，将注入符合当前运行环境的相应的bean。
 
 ## 方法
 
@@ -444,6 +464,29 @@ Jackson是一个处理JSON的类库，不过它也通过jackson-dataformat-xml�
   * **DTO与DO的区别**：首先是概念上的区别，DTO是展示层和服务层之间的数据传输对象，而DO是对现实世界各种业务角色的抽象，这就引出了两者在数据上的区别。例如：UserInfo（DO）和User（DTO），对于一个getUser()方法来说，本质上它永远不应该返回用户的密码，因此UserInfo至少比User少一个password的字段。而在领域驱动设计中，正如上文描述DO不是简单的POJO，重点在于领域业务逻辑。
   * **DO与PO的区别**：DO和PO在绝大部分情况下是一一对应的，**PO是只含有get/set方法的POJO**，但某些场景还是能反映出两者在概念上存在本质的区别，PO是需要**持久化**的，与**数据库**息息相关，而DO是**业务**上的，具有**业务逻辑**。
 
+### entity包、model包、domain包的区别
+
+#### entity(实体)
+
+entity的意思就是实体的意思，所以也是最常用到的，entity包中的类是必须和数据库相对应的，比如说：数据库有个user表，字段有long类型的id，string类型的姓名，那么entity中的user类也必须是含有这两个字段的，且类型必须一致。不能数据库存的是long类型，user类里的属性是string类型。这样做的好处是保持实体类和数据库保持一致，另外，当用到hibernate或是mybatie框架来操作数据库的时候，操作这个实体类就行，写sql文之前不需要再做数据格式处理。
+
+#### model(模型)
+
+model大家不陌生，都知道是模型的意思，当用model当包名的时候，一般里面存的是实体类的模型，一般是用来给前端用的。比如：前端页面需要显示一个user信息，user包含姓名，性别，居住地，这些信息存在数据库的时候，姓名直接存姓名，但是性别和居住地一般会用数据字典的编号存到数据库，比如：111代表男，222代表女，数据库存的就是111或222，如果用entity的话，把111、222前端都不知道是什么玩意，就算前端知道111代表男，222代表女，写了一个js判断数据处理。后来数据库变动了，111代表女，222代表男，前端的js又需要重新写，很显然这样不利于维护。所以就需要model来解决，后台从数据库取了数据转化为前端需要的数据直接传给前端，前端就不需要对数据来处理，直接显示就行了。还有一种情况，数据库里面的user表字段有十个，包含姓名，qq，生辰八字乱七八糟的等，但是前台页面只需要显示姓名，如果把entity全部传给前台，无疑传了很多没用的数据。这时候model就很好的解决了这个问题，前台需要什么数据，model就包含什么数据就行了
+
+#### domain(域)
+
+domain这个包国外很多项目经常用到，字面意思是域的意思。范围有点广了，比如一个商城的项目，商城主要的模块就是用户，订单，商品三大模块，那么这三块数据就可以叫做三个域，domain包里就是存的就是这些数据，表面上这个包和entity和model包里存的数据没什么区别，其实差别还是挺大的，特别是一些大型的项目。比如一个招聘网站的项目，最重要的对象就是简历了，那么简历是怎么存到数据库的呢，不可能用一张表就能存的，因为简历包含基本信息和工作经验，项目经验，学习经验等。基本信息可以存在简历表，但是涉及到多条的就不行，因为没人知道有多少条工作经验，项目经验，所以必须要单独建工作经验表和项目经验表关联到简历基本信息表。但是前台页面是不关心这些的，前台需要的数据就是一个简历所有信息，这时就可以用到domain来处理，domain里面的类就是一个简历对象，包含了简历基本信息以及list的工作经验，项目经验等。这样前端只需要获取一个对象就行了，不需要同时即要获取基本信息，还要从基本信息里面获取工作经验关联的简历编号，然后再去获取对应的工作经验了。
+当然，如果用model的话也是可以达到domain的效果的。这个完全是看个人喜好和项目的整体架构，因为创建不同的package的作用本来也就是想把项目分成不同的层，便于管理和维护。如果你乐意，你可以创建entity包，然后在里面存图片，创建images文件夹，里面存js。你已经看懂就行，前提是如果是团队开发的话能保证别人不打你。这个和语言一个道理，你在200面前和英国人说：private void set(int age),人家说：滚犊子；现在你这样说，人家就知道是java语言了。能被人们通用的才叫语言，你说的别人听不懂那只能算是鸟语。所以开发的时候，建类建包的命名规则规范性还是很重要的。
+
+#### 总结
+
+那么三句话总结下entity、model、domain的不同：
+
+- entity字段必须和数据库字段一样
+- model前端需要什么我们就给什么
+- domain很少用，代表一个对象模块
+
 ### 架构分析
 
 实体类这一层，有的开发写成pojo，有的写成model，也有domain，也有dto（这里做参数验证，比如password不能为空等），实体类如果你不懂什么东西的话，那你就想成是范围。
@@ -458,5 +501,7 @@ controller 通过调用service来完成业务逻辑。
 
 [SpringBoot中mapper.xml文件存放的两种位置](https://blog.csdn.net/nulinuligengnuli/article/details/119353021)
 
+### Lombok 中的 @Slf4j 注解和 @Data 注解
 
+[Lombok 中的 @Slf4j 注解和 @Data 注解](https://www.cnblogs.com/ban-boi-making-dinner/p/17217842.html)
 

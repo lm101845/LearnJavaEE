@@ -52,57 +52,54 @@ mybatis.configuration.map-underscore-to-camel-case=true
 
 **SSM整合总结：**
 
-1. **导入** `mybatis-spring-boot-starter`
-2. 配置**数据源**信息
-3. 配置mybatis的`**mapper接口扫描**`与`**xml映射文件扫描**`
-4. 编写bean，mapper，生成xml，编写sql 进行crud。**事务等操作依然和Spring中用法一样**
-5. 效果：
+* **导入** `mybatis-spring-boot-starter`
 
-1. 1. 所有sql写在xml中
-   2. 所有`mybatis配置`写在`application.properties`下面
+* 配置**数据源**信息
 
-- `jdbc场景的自动配置`： 
+* 配置mybatis的`mapper接口扫描与`**xml映射文件扫描**`
 
-- - `mybatis-spring-boot-starter`导入 `spring-boot-starter-jdbc`，jdbc是操作数据库的场景
-  - `Jdbc`场景的几个自动配置
+* 编写bean，mapper，生成xml，编写sql 进行crud。**事务等操作依然和Spring中用法一样**
 
-- - - org.springframework.boot.autoconfigure.jdbc.**DataSourceAutoConfiguration**
+* 效果：
+  * 所有sql写在xml中
+  * 所有`mybatis配置`写在`application.properties`下面
 
-- - - - **数据源的自动配置**
-      - 所有和数据源有关的配置都绑定在`DataSourceProperties`
-      - 默认使用 `HikariDataSource`
+`jdbc场景的自动配置`： 
 
-- - - org.springframework.boot.autoconfigure.jdbc.**JdbcTemplateAutoConfiguration**
+* `mybatis-spring-boot-starter`导入 `spring-boot-starter-jdbc`，jdbc是操作数据库的场景
 
-- - - - 给容器中放了`JdbcTemplate`操作数据库
+- `Jdbc`场景的几个自动配置
+  - org.springframework.boot.autoconfigure.jdbc.**DataSourceAutoConfiguration**
+    - **数据源的自动配置**
+    - 所有和数据源有关的配置都绑定在`DataSourceProperties`
+    - 默认使用 `HikariDataSource`
 
-- - - org.springframework.boot.autoconfigure.jdbc.**JndiDataSourceAutoConfiguration**
-    - org.springframework.boot.autoconfigure.jdbc.**XADataSourceAutoConfiguration**
+  - org.springframework.boot.autoconfigure.jdbc.**JdbcTemplateAutoConfiguration**
 
-- - - - **基于XA二阶提交协议的分布式事务数据源**
+    - 给容器中放了`JdbcTemplate`操作数据库
 
-- - - org.springframework.boot.autoconfigure.jdbc.**DataSourceTransactionManagerAutoConfiguration**
+  - org.springframework.boot.autoconfigure.jdbc.**JndiDataSourceAutoConfiguration**
+  - org.springframework.boot.autoconfigure.jdbc.**XADataSourceAutoConfiguration**
+    - **基于XA二阶提交协议的分布式事务数据源**
 
-- - - - **支持事务**
+  - org.springframework.boot.autoconfigure.jdbc.**DataSourceTransactionManagerAutoConfiguration**
 
-- - **具有的底层能力：数据源、**`JdbcTemplate`、**事务**
+    - **支持事务**
 
-- `MyBatisAutoConfiguration`：配置了MyBatis的整合流程
+- **具有的底层能力：数据源、**`JdbcTemplate`、**事务**
 
-- - `mybatis-spring-boot-starter`导入 `mybatis-spring-boot-autoconfigure（mybatis的自动配置包）`，
-  - 默认加载两个自动配置类：
+`MyBatisAutoConfiguration`：配置了MyBatis的整合流程
 
-- - - org.mybatis.spring.boot.autoconfigure.MybatisLanguageDriverAutoConfiguration
-    - org.mybatis.spring.boot.autoconfigure.**MybatisAutoConfiguration**
-
-- - - - **必须在数据源配置好之后才配置**
-      - 给容器中`SqlSessionFactory`组件。创建和数据库的一次会话
-      - 给容器中`SqlSessionTemplate`组件。操作数据库
-
-- - **MyBatis的所有配置绑定在**`MybatisProperties`
-  - 每个**Mapper接口**的**代理对象**是怎么创建放到容器中。详见**@MapperScan**原理：
-
-- - - 利用`@Import(MapperScannerRegistrar.class)`批量给容器中注册组件。解析指定的包路径里面的每一个类，为每一个Mapper接口类，创建Bean定义信息，注册到容器中。
+- `mybatis-spring-boot-starter`导入 `mybatis-spring-boot-autoconfigure（mybatis的自动配置包）`，
+- 默认加载两个自动配置类：
+  - org.mybatis.spring.boot.autoconfigure.MybatisLanguageDriverAutoConfiguration
+  - org.mybatis.spring.boot.autoconfigure.**MybatisAutoConfiguration**
+    - **必须在数据源配置好之后才配置**
+    - 给容器中`SqlSessionFactory`组件。创建和数据库的一次会话
+    - 给容器中`SqlSessionTemplate`组件。操作数据库
+- **MyBatis的所有配置绑定在**`MybatisProperties`
+- 每个**Mapper接口**的**代理对象**是怎么创建放到容器中。详见**@MapperScan**原理：
+  - 利用`@Import(MapperScannerRegistrar.class)`批量给容器中注册组件。解析指定的包路径里面的每一个类，为每一个Mapper接口类，创建Bean定义信息，注册到容器中。
 
 > 如何分析哪个场景导入以后，开启了哪些自动配置类。
 >
@@ -128,7 +125,7 @@ debug=true
 
 Druid官网：<https://github.com/alibaba/druid>
 
-~~~java
+~~~xml
 #数据源基本配置
 spring.datasource.url=jdbc:mysql://192.168.200.100:3306/demo
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver

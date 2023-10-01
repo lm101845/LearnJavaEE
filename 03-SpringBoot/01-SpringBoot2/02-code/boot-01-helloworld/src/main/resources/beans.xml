@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
       <!--以前SSM是这样写的-->
       <bean id="haha" class="com.atguigu.boot.bean.User">
-          <property name="name" value="zhangsan  "></property>
+          <property name="name" value="zhangsan"></property>
           <property name="age" value="18"></property>
       </bean>
 
