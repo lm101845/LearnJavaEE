@@ -1,4 +1,4 @@
-package com.boot.controller;
+package com.boot.springsecurity.jdbc.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,7 +1,6 @@
-package com.boot.config;
+package com.boot.springsecurity.jdbc.config;
 
-import com.boot.security.LoginFailureHandler;
-import com.boot.security.LoginSuccessHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -10,12 +9,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-import java.util.function.Function;
+import javax.sql.DataSource;
 
 
 /**
@@ -73,22 +73,29 @@ public class SecurityConfig {
     }
 
 
-    //@Bean
-    //public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
-    //    //admin用户具有admin、user角色
-    //    UserDetails user1 = User.withUsername("admin").password("123456").authorities("admin:api","user:api").build();
-    //    ////user用户只有user角色
-    //    UserDetails user2 = User.withUsername("user").password("123456").roles("user:api").build();
-    //    return new InMemoryUserDetailsManager(user1,user2);
-    //}
+    @Autowired
+    DataSource dataSource;
 
     @Bean
-    public InMemoryUserDetailsManager inMemoryUserDetailsManager(PasswordEncoder passwordEncoder) {
-        //admin用户具有admin、user角色
-        UserDetails user1 = User.withUsername("admin").password(passwordEncoder.encode("123456")).authorities("admin:api","user:api").build();
-        //user用户只有user角色
-        UserDetails user2 = User.withUsername("user").password(passwordEncoder.encode("123456")).roles("user:api").build();
-        return new InMemoryUserDetailsManager(user1,user2);
+    //public InMemoryUserDetailsManager inMemoryUserDetailsManager(PasswordEncoder passwordEncoder) {
+    public UserDetailsManager userDetailsManager(PasswordEncoder passwordEncoder) {
+        JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager();
+        userDetailsManager.setDataSource(dataSource);
+
+        ////admin用户具有admin、user角色
+        //UserDetails user1 = User.withUsername("admin").password(passwordEncoder.encode("123456")).authorities("admin:api","user:api").build();
+        UserDetails user1 = User.withUsername("admin").password(passwordEncoder.encode("123456")).roles("admin","user").build();
+        ////user用户只有user角色
+        //UserDetails user2 = User.withUsername("user").password(passwordEncoder.encode("123456")).roles("user:api").build();
+        UserDetails user2 = User.withUsername("user").password(passwordEncoder.encode("123456")).roles("user").build();
+
+        //在表里面创建用户信息
+        if(!userDetailsManager.userExists("admin") && !userDetailsManager.userExists("user")){
+            userDetailsManager.createUser(user1);
+            userDetailsManager.createUser(user2);
+        }
+        //return new InMemoryUserDetailsManager(user1,user2);
+        return userDetailsManager;
     }
 
 

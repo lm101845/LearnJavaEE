@@ -950,7 +950,7 @@ InMemoryUserDetailsManager是UserDetailsService接口中的一个实现类，它
 
 除了InMemoryUserDetailsManager,Spring Security还提供另一个UserDetailsService实现类：JdbcUserDetailsManager。
 
-JdbcUserDetailsManager帮助我们以JDBC的方式对接数据库和Spring Security，它设定了一个默认的数据库模型，只要遵从这个模型，在简便性上，JdbcUserDetailsManager甚至可以媲美InMemoryUserDetailsManager。
+JdbcUserDetailsManager帮助我们以JDBC的方式对接数据库和Spring Security，它设定了一个**默认**的数据库模型，只要遵从这个模型，在简便性上，JdbcUserDetailsManager甚至可以媲美InMemoryUserDetailsManager。
 
 ##### 数据库准备
 
@@ -962,9 +962,11 @@ MySQL的安装这里不赘述，首先在工程中引入JDBC和MySQL两个必要
     <artifactId>spring-boot-starter-jdbc</artifactId>
 </dependency>
 
+//适用于SpringBoot3
 <dependency>
-    <groupId>mysql</groupId>
-    <artifactId>mysql-connector-java</artifactId>
+    <groupId>com.mysql</groupId>
+    <artifactId>mysql-connector-j</artifactId>
+    <scope>runtime</scope>
 </dependency>
 ~~~
 
