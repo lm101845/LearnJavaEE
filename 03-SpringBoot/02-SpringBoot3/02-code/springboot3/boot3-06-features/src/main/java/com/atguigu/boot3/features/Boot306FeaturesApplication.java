@@ -25,7 +25,7 @@ import org.springframework.context.ConfigurableApplicationContext;
  *    命令行激活： java -jar xxx.jar  --spring.profiles.active=dev
  *
  * 3、配置文件怎么使用Profile功能
- *    1）、application.properties： 主配置文件。任何情况下都生效
+ *    1）、application.properties： 主配置文件。任何情况下都生效——不能省略
  *    2）、其他Profile环境下命名规范：  application-{profile标识}.properties：
  *          比如：application-dev.properties
  *    3）、激活指定环境即可：  配置文件激活、命令行激活
@@ -61,6 +61,7 @@ public class Boot306FeaturesApplication {
                 .bannerMode(Banner.Mode.CONSOLE)
                 //.environment(null)
                 //.listeners(null)
+                .properties("server.port=8888")
                 .run(args);
 
         try {

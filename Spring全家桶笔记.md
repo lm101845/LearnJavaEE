@@ -77,7 +77,7 @@ public @ResponseBody User getUser() {
 
 **在实际开发中，我们一般只是让后端的方法返回给前端是查询的数据，而不是一个新的视图页面。如果使用@Controller注解必须结合@ResponseBody，让这个方法返回给前端的不是一个视图，而只是给前端传递查询到的数据。**
 
-### @RestController：
+### @RestController
 
 ~~~
 @Controller + @ResponseBody = @RestController
@@ -417,6 +417,36 @@ Spring Boot里面没有Spring的配置文件，我们自己编写的配置文件
 ### @Profile
 
 `@profile`注解的作用是指定类或方法在特定的 Profile 环境生效，任何`@Component`或`@Configuration`注解的类都可以使用`@Profile`注解。在使用DI来依赖注入的时候，能够根据`@profile`标明的环境，将注入符合当前运行环境的相应的bean。
+
+### @PropertySource
+
+@PropertySource注解用于指定资源文件读取的位置，它不仅能读取properties文件，也能读取xml文件，并且通过YAML解析器，配合自定义PropertySourceFactory实现解析YAML文件。
+
+### @DisplayName
+
+@DisplayName注解 用来提供个性化的名称，可以用于测试类与测试方法，用法大同小异。@DisplayName注解可以用来输出普通文字、特殊文字以及 emoji，能为测试提供更有意义的输出。
+
+###  @BeforeAll
+
+所有测试方法运行之前先运行这个 ： 只打印一次
+
+###  @BeforeEach
+
+每个测试方法运行之前先运行这个 ： 每个方法运行打印一次
+
+###  @ParameterizedTest
+
+**参数化测试**：同一个测试案例，改变的只是测试时候输入的参数不同。按照之前的做法，可能会是通过每个输入参数都写一个测试，或者将测试参数封装到集合中循环遍历执行测试。在新版的Junit5中，已经提供了一种更加优雅的方式来进行。
+
+该特性允许我们：该特性可以让我们运行单个测试多次，且使得每次运行仅仅是参数不同而已。
+
+### @ValueSource
+
+将@ValueSource注解中的属性值赋予测试方法参数，执行测试方法。
+
+### @MethodSource
+
+指定方法名,返回值就是测试用的参数。
 
 ## 方法
 
