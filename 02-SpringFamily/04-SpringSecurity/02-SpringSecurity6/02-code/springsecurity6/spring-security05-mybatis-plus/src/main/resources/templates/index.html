@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>系统首页</title>
+    <style>
+        a{
+            display: block;
+            width: 100px;
+            height: 100px;
+            background: pink;
+        }
+    </style>
+</head>
+<body>
+  <h1>系统首页</h1>
+
+  <a th:href="@{admin/api}">/admin/api</a>
+  <a th:href="@{user/api}">/user/api</a>
+  <a th:href="@{app/api}">/app/api</a>
+
+  <a th:href="@{admin/api}">/admin/api/a</a>
+
+  <a th:href="@{user/api/my/center}">/user/api/my/center</a>
+
+  <form th:action="@{/logout}" method="post">
+      <input type="submit" value="退出">
+  </form>
+</body>
+</html>

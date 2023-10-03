@@ -100,6 +100,10 @@ public @ResponseBody User getUser() {
 
  @Param的作用就是给参数命名，比如在mapper里面某方法A（int id），当添加注解后A（@Param("userId") int id），也就是说外部想要取出传入的id值，只需要取它的参数名userId就可以了。将参数值传如SQL语句中，通过#{userId}进行取值给SQL的参数赋值。
 
+### @Field
+
+在 Spring Boot 中，@Field 注解是用来绑定请求参数到 Java 对象属性上的注解，它的原理是通过 Java 反射机制将 HTTP 请求中的参数值自动绑定到 Java 对象的属性上。当使用 @Field 注解时，Spring Boot 会根据注解中指定的属性名，在请求参数中查找同名的参数值，并将其自动转换为该属性的类型，然后赋值给该属性。
+
 ### 4个定义bean的注解
 
 Spring 提供了以下多个注解，这些注解可以直接标注在 Java 类上，**将它们定义成 Spring Bean**。
@@ -185,7 +189,7 @@ public @interface Autowired {
 
 [@ConfigurationProperties 注解使用姿势，这一篇就够了](https://zhuanlan.zhihu.com/p/75601572)
 
-声明组件的属性和配置文件哪些前缀开始项进行绑定。
+声明组件的属性和**配置文件(application.properties/yml)**哪些**前缀**开始项进行绑定。
 
 在编写项目代码时，我们要求更灵活的配置，更好的模块化整合。在 Spring Boot 项目中，为满足以上要求，我们将大量的参数配置在 application.properties 或 application.yml 文件中，通过 `@ConfigurationProperties` 注解，我们可以方便的获取这些参数值
 
@@ -245,16 +249,44 @@ public @interface Autowired {
 
 @Transactional标识在方法上，则只会影响该方法；@Transactional标识的类上，则会影响类中所有的方法
 
-### @SpringBootApplication
+### @SpringBootApplication(复合注解)
 
 表明这是一个SpringBoot应用。@SpringBootApplication由三个注解组成`@SpringBootConfiguration`、`@EnableAutoConfiguration`、`@ComponentScan`。其中`@EnableAutoConfiguration`是开启SpringBoot的核心注解。
 
-> @SpringBootApplication = @SpringBootConfiguration + @EnableAutoConfiguration + @ComponentScan
+~~~java
+@SpringBootApplication = @SpringBootConfiguration + @EnableAutoConfiguration + @ComponentScan
+~~~
 
-### @EnableAutoConfiguration
+#### @SpringBootConfiguration
 
-EnableAutoConfiguration自动装配的作用：即把指定的类构造成对象，并放入spring容器中，使其成为bean对象，作用类似@Bean注解。
-springboot启动的时候，会扫描该项目下所有spring.factories文件。
+就是`@Configuration`，容器中的组件，配置类。spring ioc启动就会加载创建这个类对象
+
+#### @EnableAutoConfiguration(复合注解)
+
+~~~
+@EnableAutoConfiguration = @AutoConfigurationPackage + @Import
+~~~
+
+EnableAutoConfiguration自动装配的作用：即把指定的类构造成对象，并放入spring容器中，使其成为bean对象，作用类似@Bean注解。 
+springboot启动的时候，会扫描该项目下所有`spring.factories`文件。
+
+##### @AutoConfigurationPackage
+
+- 扫描主程序包：加载自己的组件
+
+- 利用 `@Import(AutoConfigurationPackages.Registrar.class)` 想要给容器中导入组件。
+- 把主程序所在的**包**的所有组件导入进来。
+- **为什么SpringBoot默认只扫描主程序所在的包及其子包**
+
+##### @Import
+
+* 加载所有自动配置类：加载starter导入的组件。
+
+### @Filter
+
+@Filter注解是Java中的一种注解，用于在Servlet容器中指定过滤器。过滤器是一种在请求到达目标资源之前或之后执行的处理程序，它可以对请求和响应进行修改、拦截或监视。
+
+在Servlet 3.0及以上版本中，可以使用@Filter注解来声明和配置过滤器。通过在过滤器类上添加@Filter注解，并指定过滤器的相关属性，可以将过滤器注册到Servlet容器中。
 
 ### @Scope
 
@@ -272,7 +304,17 @@ springboot启动的时候，会扫描该项目下所有spring.factories文件。
 
 ### @EnableWebMvc
 
-如果我们需要全面接管SpringMVC的所有配置并**禁用默认配置**，仅需要编写一个`WebMvcConfigurer`配置类，并标注 `@EnableWebMvc` 即可
+* 全面接管SpringMVC，禁用掉所有MVC底层的自动配置。
+
+如果我们需要**全面接管**SpringMVC的所有配置并**禁用默认配置**，仅需要编写一个`WebMvcConfigurer`配置类，并标注 `@EnableWebMvc` 即可
+
+### @EnableAsync
+
+开启异步
+
+### @EnableScheduling
+
+开启调度(定时任务)
 
 ### @SpringBootTest
 
@@ -448,6 +490,54 @@ Spring Boot里面没有Spring的配置文件，我们自己编写的配置文件
 
 指定方法名,返回值就是测试用的参数。
 
+### @RunWith
+
+**@RunWith(SpringRunner.class)和@SpringBootTest区别与联系**
+
+@RunWith(SpringRunner.class)和@SpringBootTest都是Spring框架中用于单元测试的注解，但它们的用途和目标是不同的。
+
+@RunWith(SpringRunner.class)是JUnit的一个注解，用于指定单元测试的运行器。在Spring框架中，这个注解使得测试能在Spring容器环境下执行。如果你需要在测试中使用Spring注入的类（例如，使用@Autowired注解的类），你就需要使用@RunWith(SpringRunner.class)注解，这样注入的类才能在Spring容器中实例化，使得自动注入能够生效。否则，如果你试图使用未注入的类，就可能会遇到NullPointerExecption。
+
+@SpringBootTest是Spring Boot框架中的一个注解，它表示这个类是测试类。这个注解在打包程序时会被忽略，不会被打包发送。这个注解通常与@RunWith(SpringRunner.class)一起使用，以在Spring Boot环境中运行单元测试。
+
+总结来说，这两个注解的联系在于它们通常一起使用，以在Spring Boot环境中进行单元测试。区别在于@RunWith(SpringRunner.class)是JUnit的注解，用于指定运行器，而@SpringBootTest是Spring Boot的注解，用于标识测试类。
+
+### @RabbitListener
+
+~~~java
+@Component
+public class SpringRabbitListener {
+    @RabbitListener(queues = "simple.queue")
+    public void listenSimpleQueue(String msg){
+        System.out.println("spring 消费者接收到消息：【" + msg + "】");
+    }
+}
+~~~
+
+### @EventListener
+
+[SpringBoot中@EventListener注解的使用](https://blog.csdn.net/qq_37687594/article/details/113200974)
+
+在开发工作中，会遇到一种场景，做完某一件事情以后，需要广播一些消息或者通知，告诉其他的模块进行一些事件处理，一般来说，可以一个一个发送请求去通知，但是有一种更好的方式，那就是事件监听，事件监听也是设计模式中 发布-订阅模式、观察者模式的一种实现。
+
+观察者模式：简单的来讲就是你在做事情的时候身边有人在盯着你，当你做的某一件事情是旁边观察的人感兴趣的事情的时候，他会根据这个事情做一些其他的事，但是盯着你看的人必须要到你这里来登记，否则你无法通知到他（或者说他没有资格来盯着你做事情）。
+
+对于 Spring 容器的一些事件，可以监听并且触发相应的方法。通常的方法有 2 种，ApplicationListener 接口和**@EventListener** 注解。
+
+### @Order
+
+注解@Order或者接口Ordered的作用是定义Spring IOC容器中Bean的执行顺序的优先级，而不是定义Bean的加载顺序，Bean的加载顺序不受@Order或Ordered接口的影响；
+
+###  @EnableMethodSecurity
+
+`@EnableMethodSecurity`是Spring Security框架中的一个注解，用于开启方法级别的安全性配置。在Spring Security 5.6之后，它引入了一种更灵活的方法来配置方法安全授权（Method Security），替代了之前的标准做法`@EnableGlobalMethodSecurity`。
+
+使用`@EnableMethodSecurity`注解，可以为应用中的方法配置身份认证和授权，以控制对方法的访问权限。该注解可以与Spring Security的其他功能结合使用，例如使用表达式实现更细粒度的访问控制。
+
+在`@EnableMethodSecurity`注解中，可以使用一些属性来进一步配置方法安全授权。例如，`securedEnabled`属性用于开启`@Secured`注解过滤权限的功能，`jsr250Enabled`属性用于开启`@RolesAllowed`注解过滤权限的功能，而`prePostEnabled`属性则使得表达式时间方法级别的安全性4个注解可用，包括`@PreAuthorize`、`@PostAuthorize`等。
+
+总的来说，`@EnableMethodSecurity`注解为Spring应用提供了一种灵活且强大的方法安全授权机制，帮助开发者更好地控制对应用方法的访问权限。
+
 ## 方法
 
 ### getBean
@@ -535,3 +625,60 @@ controller 通过调用service来完成业务逻辑。
 
 [Lombok 中的 @Slf4j 注解和 @Data 注解](https://www.cnblogs.com/ban-boi-making-dinner/p/17217842.html)
 
+### org.junit.test 和 org.junit.jupiter.api.test区别
+
+org.junit.Test 和 org.junit.jupiter.api.Test 都是 JUnit 中的注解，用于标识测试方法，但它们来自 JUnit 的不同版本，具有一些不同的特性和用法。
+
+1. JUnit 版本：org.junit.Test 是 JUnit 4 的注解，而 org.junit.jupiter.api.Test 是 JUnit 5 的注解。
+2. 注解特性：在 JUnit 4 中，@Test 注解可以用于任何公共的 void 方法，且不需要额外的修饰符。但在 JUnit 5 中，如果使用 org.junit.jupiter.api.Test 注解，测试方法必须是 public 的，否则将会抛出异常。
+3. 异常处理：在 JUnit 4 中，如果一个测试方法抛出了任何异常，JUnit 会将其报告为失败。而在 JUnit 5 中，异常处理更加精细，你可以使用 assertThrows 方法来捕获并检查预期的异常。
+4. 拓展性：JUnit 5 提供了更多的特性，如动态测试、嵌套测试、条件测试等，这使得测试更加灵活和强大。
+5. 在 Spring Boot 中的使用：在 Spring Boot 2.2.x 之前，通常使用 JUnit 4，即 org.junit.Test 注解。在 Spring Boot 2.2.x 及之后的版本中，推荐使用 JUnit 5，即 org.junit.jupiter.api.Test 注解。
+
+总结来说，org.junit.Test 和 org.junit.jupiter.api.Test 都用于标识测试方法，但后者提供了更多的特性和灵活性，且在 Spring Boot 的新版本中推荐使用。
+
+### 只引用spring-boot-starter-web不引用spring-boot-starter可以吗
+
+只要我们在 Spring  Boot 项目中的 pom.xml 中引入了 spring-boot-starter-web ，即使不进行任何配置，也可以直接使用 Spring MVC 进行 Web 开发。
+
+### spring boot的pom.xml中，什么时候应该写version，什么时候不写
+
+在Spring Boot项目的`pom.xml`文件中，`version`元素是用来指定项目依赖的版本号的。在大部分情况下，你应该为项目依赖指定一个具体的版本号。这样可以确保你的项目在构建和运行时使用的是你预期的特定版本。
+
+然而，在Spring Boot项目中，有一种特殊情况可以不指定依赖的版本号，那就是当你使用Spring Boot的"父POM"时。Spring Boot提供了一个包含常用依赖管理的父POM，你可以在你的`pom.xml`文件中继承它。当你继承Spring Boot的父POM时，它可以为你管理依赖的版本，因此你不需要在每个依赖中都指定版本号。
+
+下面是一个继承Spring Boot父POM的示例：
+
+
+```xml
+<project>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>my-spring-boot-project</artifactId>
+    <version>1.0.0</version>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.5.4</version> <!-- 指定Spring Boot的版本 -->
+    </parent>
+
+    <properties>
+        <java.version>1.8</java.version> <!-- 指定Java版本 -->
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId> <!-- 不需要指定版本号 -->
+        </dependency>
+        <!-- 其他依赖 -->
+    </dependencies>
+
+    <!-- 其他配置 -->
+</project>
+```
+在这个示例中，我们继承了`spring-boot-starter-parent`作为父POM，并指定了它的版本号`2.5.4`。在`<dependencies>`中，我们添加了`spring-boot-starter-web`依赖，但是没有指定版本号。这是因为父POM已经为我们管理了版本的依赖关系。
+
+总结起来，当你使用Spring Boot的父POM时，你可以省略依赖的版本号。但是，如果你没有使用父POM或者需要覆盖父POM中指定的版本号，你应该在`<dependencies>`中指定具体的版本号。

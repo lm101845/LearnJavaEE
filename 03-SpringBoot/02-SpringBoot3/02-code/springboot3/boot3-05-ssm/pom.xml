@@ -50,6 +50,11 @@
             <version>3.0.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.atguigu</groupId>
+            <artifactId>boot3-08-robot-stater</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -4,6 +4,8 @@ import com.atguigu.boot3.features.bean.Cat;
 import com.atguigu.boot3.features.bean.Dog;
 import com.atguigu.boot3.features.bean.Pig;
 import com.atguigu.boot3.features.bean.Sheep;
+import com.atguigu.boot3.robotstater.robot.RobotAutoConfiguration;
+import com.atguigu.boot3.robotstater.robot.annotation.EnableRobot;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.Banner;
@@ -11,6 +13,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Import;
 
 /**
  * 环境隔离：
@@ -36,6 +39,14 @@ import org.springframework.context.ConfigurableApplicationContext;
  *
  *        主配置和激活的配置都生效，优先以激活的配置为准
  */
+
+
+/**
+ * 自定义starter所有组件包名：com.atguigu.boot3.robotstater.starter.robot
+ * 当前项目的主程序所在包：    com.atguigu.boot3.features
+ */
+//@Import(RobotAutoConfiguration.class)
+@EnableRobot
 @SpringBootApplication   //主程序类
 @Slf4j
 public class Boot306FeaturesApplication {

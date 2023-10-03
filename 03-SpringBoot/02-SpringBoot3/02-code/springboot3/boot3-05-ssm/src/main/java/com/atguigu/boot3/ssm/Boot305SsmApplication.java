@@ -1,5 +1,6 @@
 package com.atguigu.boot3.ssm;
 
+import com.atguigu.boot3.robotstater.robot.annotation.EnableRobot;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @MapperScan(basePackages = "com.atguigu.boot3.ssm.mapper")
 @SpringBootApplication
+//@EnableRobot
 public class Boot305SsmApplication {
 
     public static void main(String[] args) {
