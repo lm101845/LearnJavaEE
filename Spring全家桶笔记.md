@@ -586,6 +586,8 @@ public class SpringRabbitListener {
 
 ### entity包、model包、domain包的区别
 
+[entity包、model包、domain包的区别](https://blog.csdn.net/qq_38977097/article/details/81702349)
+
 #### entity(实体)
 
 entity的意思就是实体的意思，所以也是最常用到的，entity包中的类是必须和数据库相对应的，比如说：数据库有个user表，字段有long类型的id，string类型的姓名，那么entity中的user类也必须是含有这两个字段的，且类型必须一致。不能数据库存的是long类型，user类里的属性是string类型。这样做的好处是保持实体类和数据库保持一致，另外，当用到hibernate或是mybatie框架来操作数据库的时候，操作这个实体类就行，写sql文之前不需要再做数据格式处理。
@@ -682,3 +684,67 @@ org.junit.Test 和 org.junit.jupiter.api.Test 都是 JUnit 中的注解，用于
 在这个示例中，我们继承了`spring-boot-starter-parent`作为父POM，并指定了它的版本号`2.5.4`。在`<dependencies>`中，我们添加了`spring-boot-starter-web`依赖，但是没有指定版本号。这是因为父POM已经为我们管理了版本的依赖关系。
 
 总结起来，当你使用Spring Boot的父POM时，你可以省略依赖的版本号。但是，如果你没有使用父POM或者需要覆盖父POM中指定的版本号，你应该在`<dependencies>`中指定具体的版本号。
+
+### **spring boot3可以使用swagger2吗？**
+
+Spring Boot 3目前(2023年10月4日15:48:34)还不支持Swagger 2。Swagger 2是针对Spring Boot 1.x和2.x版本的，而Spring Boot 3在架构和依赖项方面有很大的变化，因此Swagger 2无法直接在Spring Boot 3上使用。
+
+不过，Spring Boot 3支持OpenAPI 3.0规范，这是Swagger的后续版本。OpenAPI 3.0提供了更强大的功能和更好的规范，因此在Spring Boot 3中建议使用OpenAPI 3.0代替Swagger 2。
+
+为了在Spring Boot 3中使用OpenAPI 3.0，你可以使用SpringDoc项目。SpringDoc是一个基于OpenAPI 3.0规范的Spring Boot扩展，它可以自动生成API文档并提供强大的UI界面。
+
+要开始使用SpringDoc，请在Spring Boot 3项目中添加以下依赖项：
+
+```xml
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-ui</artifactId>
+    <version>最新的版本号</version>
+</dependency>
+```
+
+然后，在应用程序的配置文件中添加以下属性：
+
+```properties
+springdoc.api-docs.enabled=true
+springdoc.swagger-ui.enabled=true
+```
+
+现在，你可以通过访问`/swagger-ui/index.html`来查看自动生成的API文档。
+
+请注意，SpringDoc在Spring Boot 3中的用法可能与在较早版本中的用法有所不同。因此，请查阅SpringDoc的官方文档以获取更详细的信息和最新的用法示例。
+
+### **swagger和knife4j区别**
+
+Swagger和Knife4j都是用于生成、描述、调用和可视化RESTful风格的Web服务（API文档）的工具，但它们在功能和用法上有一些区别。
+
+1. Swagger是一个规范和完整的框架，主要用于生成API文档。它使得前后端分离开发更加方便，有利于团队协作。Swagger可以自动生成接口文档，降低后端开发人员编写接口文档的负担。此外，Swagger还提供了功能测试的功能。
+2. Knife4j是Swagger的增强UI实现，为Java开发者在使用Swagger的时候，提供了简洁、强大的接口文档体验。它在完全遵循了Swagger的使用方式的基础上，做了功能增强。如果你用过Swagger，你可以无缝切换到Knife4j。
+
+总的来说，Swagger和Knife4j都是为了更好地管理和展示API文档而开发的工具，它们可以帮助开发人员提高开发效率，促进团队协作。具体选择哪个工具，可以根据项目的需求和团队的偏好来决定。
+
+> 我项目中引入了支持SpringBoot3版的knife4j，但是还不熟悉怎么用，暂时是只用到了swagger
+
+### pom.xml中为什么要exclude lombok
+
+在你提供的 Maven 配置中，`lombok` 被排除在 `spring-boot-maven-plugin` 之外。`lombok` 是一个 Java 库，它通过注解减少了 Java 代码的样板代码。例如，你可以使用 `@Getter` 和 `@Setter` 注解自动创建 getter 和 setter 方法，而不是手动编写这些方法。
+
+将 `lombok` 排除在 `spring-boot-maven-plugin` 之外可能有以下几个原因：
+
+1. **避免依赖冲突**：如果你的项目中有多个版本的 `lombok`，可能会导致依赖冲突。通过排除 `lombok`，你可以确保 `spring-boot-maven-plugin` 不会使用任何版本的 `lombok`，从而避免潜在的冲突。
+2. **减少插件的复杂性**：`spring-boot-maven-plugin` 可能会处理一些与 `lombok` 相关的复杂情况，例如处理生成的代码或其他与 `lombok` 相关的特性。通过排除 `lombok`，你可以简化插件的配置和处理。
+3. **自定义 `lombok` 版本**：你的项目可能需要特定版本的 `lombok`，而 `spring-boot-maven-plugin` 可能会默认使用不同版本。通过排除 `lombok`，你可以确保插件不会使用其默认版本，而是使用你在项目其他地方定义的版本。
+4. **避免不必要的依赖**：`spring-boot-maven-plugin` 可能不需要 `lombok` 来执行其任务。通过排除它，你可以避免引入不必要的依赖，从而减小项目的规模和复杂性。
+
+通常，在 Maven 项目中排除依赖是为了解决特定的问题或满足特定的需求。具体的原因可能取决于你的项目配置和需求。
+
+### gson,jackson,fastjson区别
+
+Gson、Jackson 和 FastJson 都是用于在 Java 对象和 JSON 数据之间进行映射的库。以下是它们之间的主要区别：
+
+1. 性能：虽然性能并不是唯一需要考虑的因素，但相对于数据库 IO，JSON 解析时间可以忽略不计。FastJson 针对特定需求做了很多优化，因此在某些情况下，FastJson 的性能可能优于 Gson 和 Jackson。
+2. 功能和可配置性：Jackson 的功能更强大，可配置化程度更高。例如，它可以序列化 Guava 类型、Java 8 中的时间日期等。Gson 和 FastJson 也提供了许多配置选项，但在某些复杂情况下，Jackson 可能更灵活。
+3. 严格性：FastJson 针对特定需求做了优化，导致校验不严格。例如，数组 []、夏令时、末尾不带逗号等都能转成对象。这可能在某些情况下会导致数据不一致或其他问题。Gson 和 Jackson 在这方面相对更严格。
+4. 起源和发展：Gson 是 Google 提供的库，最初是为在 Google 内部使用而创建的，后来进行了开源。Jackson 和 FastJson 则是由社区开发者创建的开源项目。
+
+综上所述，Gson、Jackson 和 FastJson 各有优势。在选择时，需要根据项目的具体需求和目标来决定使用哪个库。

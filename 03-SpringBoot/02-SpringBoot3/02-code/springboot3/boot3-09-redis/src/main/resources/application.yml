@@ -1,0 +1,9 @@
+server:
+  port: 8888
+spring:
+  data:
+    redis:
+      host: 101.201.238.8
+      port: 6379
+      password: 123456
+
