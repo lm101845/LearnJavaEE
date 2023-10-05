@@ -394,20 +394,25 @@ URL 中的 {xxx} 占位符可以通过@PathVariable(“xxx”) 绑定到操作�
 
 ### @RequestParam
 
-@RequestParam是将请求参数和控制器方法的形参创建映射关系
+@RequestParam是将**请求参数**和**控制器方法的形参**创建映射关系。
+
 @RequestParam注解一共有三个属性：
 
 * value：指定为形参赋值的请求参数的参数名
-* required：设置是否必须传输此请求参数，默认值为true
+
+* required：设置是否必须传输此请求参数，默认值为true。
+
   若设置为true时，则当前请求必须传输value所指定的请求参数，若没有传输该请求参数，且没有设置defaultValue属性，则页面报错400：Required String parameter 'xxx' is not present；若设置为
   false，则当前请求不是必须传输value所指定的请求参数，若没有传输，则注解所标识的形参的值为
   null。
+
 * defaultValue：不管required属性值为true或false，当value所指定的请求参数没有传输或传输的值
   为""时，则使用默认值为形参赋值
 
 ### @RequestHeader
 
-@RequestHeader是将请求头信息和控制器方法的形参创建映射关系
+@RequestHeader是将**请求头信息**和**控制器方法的形参**创建映射关系。
+
 @RequestHeader注解一共有三个属性：value、required、defaultValue，用法同@RequestParam
 
 ### @CookieValue
@@ -537,6 +542,23 @@ public class SpringRabbitListener {
 在`@EnableMethodSecurity`注解中，可以使用一些属性来进一步配置方法安全授权。例如，`securedEnabled`属性用于开启`@Secured`注解过滤权限的功能，`jsr250Enabled`属性用于开启`@RolesAllowed`注解过滤权限的功能，而`prePostEnabled`属性则使得表达式时间方法级别的安全性4个注解可用，包括`@PreAuthorize`、`@PostAuthorize`等。
 
 总的来说，`@EnableMethodSecurity`注解为Spring应用提供了一种灵活且强大的方法安全授权机制，帮助开发者更好地控制对应用方法的访问权限。
+
+### @GetExchange
+
+`@GetExchange` 注解是 Spring Framework 中的一个注解，用于指示一个方法应该处理 HTTP GET 请求，并且使用 Exchange 作为方法的参数类型。
+
+在 Spring WebFlux 中，请求和响应的处理是基于非阻塞的，使用 `ServerWebExchange` 接口来表示当前的 HTTP 请求-响应交互。`@GetExchange` 注解是 Spring WebFlux 提供的注解，用于将处理方法与特定的 HTTP GET 请求路径关联起来，并将请求处理逻辑封装在方法中。
+
+## Swagger有关注解
+
+| 注解         | 标注位置            | 作用                   |
+| ------------ | ------------------- | ---------------------- |
+| @Tag         | controller 类       | 标识 controller 作用   |
+| @Parameter   | 参数                | 标识参数作用           |
+| @Parameters  | 参数                | 参数多重说明           |
+| @Schema      | model 层的 JavaBean | 描述模型作用及每个属性 |
+| @Operation   | 方法                | 描述方法作用           |
+| @ApiResponse | 方法                | 描述响应状态码等       |
 
 ## 方法
 

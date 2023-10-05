@@ -311,7 +311,36 @@ public void testUpdate(){
 
 ### IService接口常用方法汇总
 
-> 暂无
+#### query链式调用
+
+~~~java
+IUserService文件1:
+public interface IUserService extends IService<User> {
+    //实现登录功能
+    Result login(LoginFormDTO loginForm, HttpSession session);
+}
+
+
+UserServiceImpl文件2:
+@Service
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
+     @Override
+    public Result login(LoginFormDTO loginForm, HttpSession session) {
+        User user = query().eq("phone", phone).one();
+        //这个就是MyBatisPlus中的链式调用写法
+    }
+}
+
+
+UserController文件3：
+@Resource
+private IUserService userService; 
+    @PostMapping("/login")
+    public Result login(@RequestBody LoginFormDTO loginForm, HttpSession session){
+        //实现登录功能
+        return userService.login(loginForm,session);
+    }
+~~~
 
 ### 自定义功能
 
