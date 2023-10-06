@@ -8,15 +8,19 @@
 
 [大白话讲解Spring的@bean注解](https://zhuanlan.zhihu.com/p/99870991)
 
-添加在配置类中返回对象的**方法**上。使得Spring框架自动调用此方法，并管理此方法返回的对象放入容器。
+添加在配置类中返回对象的**方法**上。使得Spring框架自动调用此方法，并管理此方法返回的**对象**放入容器。
 
-Spring的@Bean注解用于告诉**方法**，产生一个Bean对象，然后这个Bean对象交给Spring管理。 产生这个Bean对象的方法Spring只会调用一次，随后这个Spring将会将这个Bean对象放在自己的IOC容器中。@Bean明确地指示了一种方法，什么方法呢？产生一个bean的方法，并且交给Spring容器管理；从这我们就明白了为啥@Bean是放在方法的注释上了，因为它很明确地告诉被注释的方法，你给我产生一个Bean，然后交给Spring容器，剩下的你就别管了。记住，@Bean就放在方法上，就是让方法去产生一个Bean，然后交给Spring容器。
+Spring的@Bean注解用于告诉**方法**，**产生一个Bean对象**，然后这个Bean对象交给Spring管理。 产生这个Bean对象的方法Spring只会调用一次，随后这个Spring将会将这个Bean对象放在自己的IOC容器中。@Bean明确地指示了一种方法，什么方法呢？产生一个bean的方法，并且交给Spring容器管理；从这我们就明白了为啥@Bean是放在方法的注释上了，因为它很明确地告诉被注释的方法，你给我产生一个Bean，然后交给Spring容器，剩下的你就别管了。记住，@Bean就放在方法上，就是让方法去产生一个Bean，然后交给Spring容器。
 
 不知道大家有没有想过，用于注册Bean的注解的有那么多个，为何还要出现@Bean注解？
 
 原因很简单：类似@Component , @Repository , @ Controller , @Service 这些注册Bean的注解存在局限性，只能局限作用于自己编写的类，如果是一个jar包第三方库要加入IOC容器的话，这些注解就手无缚鸡之力了，是的，@Bean注解就可以做到这一点！当然除了@Bean注解能做到还有@Import也能把第三方库中的类实例交给spring管理，而且@Import更加方便快捷，只是@Import注解并不在本篇范围内，这里就不再概述。
 
 使用@Bean注解的另一个好处就是能够动态获取一个Bean对象，能够根据环境不同得到不同的Bean对象。
+
+=======================================================================================
+
+在Java编程语言中，@Bean是一个注解，用于将一个方法标记为Spring容器中的一个Bean。 具体来说，@Bean注解可以用于方法上，该方法返回一个对象，该对象将被Spring容器管理和提供给其他程序组件使用。 @Bean注解通常与@Configuration注解一起使用，@Configuration注解用于标记一个Java类为Spring配置类，其中可以包含一些@Bean注解的方法，这些方法返回的对象将被Spring容器管理。 使用@Bean注解可以让开发人员更加方便地管理Spring容器中的对象，同时也可以利用Spring的依赖注入机制将这些对象注入到其他组件中。
 
 ### 多个URL处理注解(未列举完全)
 
@@ -507,17 +511,6 @@ Spring Boot里面没有Spring的配置文件，我们自己编写的配置文件
 
 总结来说，这两个注解的联系在于它们通常一起使用，以在Spring Boot环境中进行单元测试。区别在于@RunWith(SpringRunner.class)是JUnit的注解，用于指定运行器，而@SpringBootTest是Spring Boot的注解，用于标识测试类。
 
-### @RabbitListener
-
-~~~java
-@Component
-public class SpringRabbitListener {
-    @RabbitListener(queues = "simple.queue")
-    public void listenSimpleQueue(String msg){
-        System.out.println("spring 消费者接收到消息：【" + msg + "】");
-    }
-}
-~~~
 
 ### @EventListener
 
@@ -559,6 +552,58 @@ public class SpringRabbitListener {
 | @Schema      | model 层的 JavaBean | 描述模型作用及每个属性 |
 | @Operation   | 方法                | 描述方法作用           |
 | @ApiResponse | 方法                | 描述响应状态码等       |
+
+## RabbitMQ有关注解
+
+### @RabbitListener
+
+@RabbitListener是Spring AMQP中的一个注解，它用于声明一个方法是RabbitMQ消息监听器，用于接收指定队列中的消息。当使用@RabbitListener注解的方法上，可以接收来自RabbitMQ队列的消息。同时，这个方法可以通过使用@RabbitHandler注解标记，并在方法中声明一个参数来表示要接收的消息。
+
+在具体作用上，@RabbitListener会自动创建和配置一个RabbitMQ连接工厂，并绑定到指定的队列。它也会自动创建和配置一个RabbitMQ消费者，并在消息到达时调用带有@RabbitHandler注解的方法处理消息。此外，它还允许通过一些配置参数来定制RabbitMQ连接工厂和消费者的行为，例如设置消息的自动确认模式、设置并发消费者数、设置消息转换器等。
+
+总的来说，@RabbitListener为Spring应用程序提供了一种方便的方式来处理RabbitMQ队列中的消息。
+
+~~~java
+@Component
+public class SpringRabbitListener {
+    @RabbitListener(queues = "simple.queue")
+    public void listenSimpleQueue(String msg){
+        System.out.println("spring 消费者接收到消息：【" + msg + "】");
+    }
+}
+~~~
+
+### @Queue
+
+@Queue是Spring AMQP中的一个注解，用于配置RabbitMQ的队列。它主要用于声明队列的属性，例如队列名称、是否持久化、是否自动删除以及是否独占等。具体来说，@Queue注解有以下属性：
+
+* value：指定队列的名称。
+* durable：指定队列是否持久化。如果为true，则队列将在RabbitMQ服务器重启后仍然存在。默认为false。
+* exclusive：指定队列是否为当前连接的独占队列。如果为true，则该队列只能被当前连接使用，其他连接无法访问。默认为false。
+* autoDelete：指定队列是否自动删除。如果为true，则当最后一个消费者断开连接后，队列将被自动删除。默认为false。
+
+需要注意的是，在Spring Boot中使用RabbitMQ时，创建队列的方式与之前的RabbitMQ使用方式有所不同。在Spring Boot中，队列是根据消费者来创建的，只有存在消费者时才会创建队列。而在之前的RabbitMQ使用方式中，运行生产者就会直接创建队列。因此，在使用Spring Boot和RabbitMQ时，需要在消费者中使用@Queue注解来声明队列，以确保队列能够正确地创建和配置。
+
+### @QueueBinding
+
+@QueueBinding是Spring AMQP中的一个注解，用于配置RabbitMQ的队列和交换器的绑定关系。它主要用于指定队列、交换器和路由键的信息，以便将队列和交换器正确地绑定在一起。具体来说，@QueueBinding注解有以下属性：
+
+* value：指定绑定的队列，使用@Queue注解的value属性来指定队列的名称。
+* exchange：指定绑定的交换器，使用@Exchange注解的value属性来指定交换器的名称。
+* key：指定路由键，用于将消息从交换器路由到队列。
+
+需要注意的是，在使用@QueueBinding注解时，必须同时指定@Queue和@Exchange注解，以便正确配置队列和交换器的绑定关系。同时，路由键也需要根据实际情况进行配置，以便将消息正确地路由到指定的队列中。
+
+### @Exchange
+
+@Exchange是Spring AMQP中的一个注解，用于配置RabbitMQ的交换器。它主要用于声明交换器的名称、类型和属性，以便将消息从生产者发送到队列中。具体来说，@Exchange注解有以下属性：
+
+* value：指定交换器的名称。
+* type：指定交换器的类型，包括direct、fanout、topic和headers四种类型。
+* durable：指定交换器是否持久化。如果为true，则交换器将在RabbitMQ服务器重启后仍然存在。默认为false。
+* autoDelete：指定交换器是否自动删除。如果为true，则当没有任何队列与其绑定时，交换器将被自动删除。默认为false。
+
+需要注意的是，交换器的类型决定了消息从生产者发送到队列的方式，不同的类型有不同的路由规则。例如，direct类型使用精确匹配的路由键将消息路由到队列，fanout类型将消息发送到所有与其绑定的队列，topic类型使用模式匹配的路由键将消息路由到队列，而headers类型则使用消息头的匹配规则将消息路由到队列。因此，在选择交换器类型时，需要根据实际的需求进行配置。
 
 ## 方法
 
