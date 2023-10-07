@@ -1,0 +1,12 @@
+#\u901A\u8FC7web\u65B9\u5F0F\u66B4\u9732\u6240\u6709\u76D1\u63A7\u7AEF\u70B9
+management:
+  endpoints:
+    enabled-by-default: true #\u66B4\u9732\u6240\u6709\u7AEF\u70B9\u4FE1\u606F
+    web:
+      exposure:
+        include: '*'  #\u4EE5web\u65B9\u5F0F\u66B4\u9732
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+

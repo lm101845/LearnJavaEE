@@ -2,7 +2,7 @@
 
 ## Spring/SpringBoot有关注解
 
-> 其他注解，如MyBatis等在相关笔记中。
+> 其他注解，如MyBatis放在特定相关笔记中。
 
 ### @Bean
 
@@ -526,7 +526,21 @@ Spring Boot里面没有Spring的配置文件，我们自己编写的配置文件
 
 注解@Order或者接口Ordered的作用是定义Spring IOC容器中Bean的执行顺序的优先级，而不是定义Bean的加载顺序，Bean的加载顺序不受@Order或Ordered接口的影响；
 
-###  @EnableMethodSecurity
+### @GetExchange
+
+`@GetExchange` 注解是 Spring Framework 中的一个注解，用于指示一个方法应该处理 HTTP GET 请求，并且使用 Exchange 作为方法的参数类型。
+
+在 Spring WebFlux 中，请求和响应的处理是基于非阻塞的，使用 `ServerWebExchange` 接口来表示当前的 HTTP 请求-响应交互。`@GetExchange` 注解是 Spring WebFlux 提供的注解，用于将处理方法与特定的 HTTP GET 请求路径关联起来，并将请求处理逻辑封装在方法中。
+
+## Spring-Security有关注解
+
+### @EnableWebSecurity
+
+@EnableWebSecurity是Spring Security提供的注解，用于开启Web安全性支持。当该注解存在时，Spring Security的默认配置将会被应用。这个注解通常用于某个Web安全配置类上，实现接口WebSecurityConfigurer或者继承自WebSecurityConfigurerAdapter。继承了WebSecurityConfigurerAdapter的类，可以在子类中进行各种安全措施的配置。
+
+### @EnableMethodSecurity
+
+开启方法级别的精确权限控制。
 
 `@EnableMethodSecurity`是Spring Security框架中的一个注解，用于开启方法级别的安全性配置。在Spring Security 5.6之后，它引入了一种更灵活的方法来配置方法安全授权（Method Security），替代了之前的标准做法`@EnableGlobalMethodSecurity`。
 
@@ -536,11 +550,9 @@ Spring Boot里面没有Spring的配置文件，我们自己编写的配置文件
 
 总的来说，`@EnableMethodSecurity`注解为Spring应用提供了一种灵活且强大的方法安全授权机制，帮助开发者更好地控制对应用方法的访问权限。
 
-### @GetExchange
+### @PreAuthorize
 
-`@GetExchange` 注解是 Spring Framework 中的一个注解，用于指示一个方法应该处理 HTTP GET 请求，并且使用 Exchange 作为方法的参数类型。
-
-在 Spring WebFlux 中，请求和响应的处理是基于非阻塞的，使用 `ServerWebExchange` 接口来表示当前的 HTTP 请求-响应交互。`@GetExchange` 注解是 Spring WebFlux 提供的注解，用于将处理方法与特定的 HTTP GET 请求路径关联起来，并将请求处理逻辑封装在方法中。
+@PreAuthorize注解会在方法执行前进行权限验证，支持Spring EL表达式，它是基于方法注解的权限解决方案。只有当@EnableGlobalMethodSecurity(prePostEnabled=true)的时候，@PreAuthorize才可以使用，@EnableGlobalMethodSecurity注解在SPRING安全中心进行设置。
 
 ## Swagger有关注解
 
