@@ -2,8 +2,6 @@
 
 ## Spring/SpringBoot有关注解
 
-> 其他注解，如MyBatis放在特定相关笔记中。
-
 ### @Bean
 
 [大白话讲解Spring的@bean注解](https://zhuanlan.zhihu.com/p/99870991)
@@ -330,39 +328,11 @@ Spring Test与JUnit等其他测试框架结合起来，提供了便捷高效的�
 - 切片测试：一般面向难于测试的边界功能，介于单元测试和功能测试之间。涉及到的注解有@RunWith @WebMvcTest等。
 - 功能测试：一般面向某个完整的业务功能，同时也可以使用切面测试中的mock能力，推荐使用。涉及到的注解有@RunWith @SpringBootTest等。
 
-### @Data
-
-```
-@Data = @NoArgsConstructor + @Getter + @Setter + @EqualsAndHashCode
-注意：没有有参构造！！！！
-```
-
-> 只添加@Data注解时，查看class文件发现只有无参构造方法，添加@AllArgsConstructor和@NoArgsConstructor两个，才能同时有无参和带参构造方法
-
-### @Builder
-
-> builder这个方法是lombook的一个注解，大概就是不用new 对象可以直接这样通过链式编程来构建对象，提高的了的代码的可读性和减少代码量。
-
-Builder 使用创建者模式又叫建造者模式。简单来说，就是一步步创建一个对象，它对用户屏蔽了里面构建的细节，但却可以精细地控制对象的构造过程。
-
-`@Builder`注释为你的类生成相对略微复杂的构建器API。`@Builder`可以让你以下面显示的那样调用你的代码，来初始化你的实例对象：
-
-```java
-Student.builder()
-               .sno( "001" )
-               .sname( "admin" )
-               .sage( 18 )
-               .sphone( "110" )
-               .build();
-```
-
-`@Builder`可以放在类，构造函数或方法上。 虽然放在类上和放在构造函数上这两种模式是最常见的用例，但`@Builder`最容易用放在方法的用例来解释。
-
 ### @Mapper
 
 在接口类上添加了@Mapper，在编译之后会生成相应的接口实现类。
 
-使用 Mapper 接口的方式，不用写接口实现类，直接完成数据库操作，简单方便。
+使用 Mapper 接口的方式，**不用写接口实现类，直接完成数据库操作**，简单方便。
 
 ### @MapperScan
 
@@ -377,6 +347,10 @@ Student.builder()
 * 使用@EnableWebMvc注解启用spring mvc的基于java config的配置 
 
 * 实现WebMvcConfigurer接口的方法可以自定义spring mvc的配置
+
+### @EnableDiscoveryClient
+
+@EnableDiscoveryClient注解是把本服务的信息暴露给注册中心。
 
 ### @PathVariable
 
@@ -463,17 +437,39 @@ Jackson是一个处理JSON的类库，不过它也通过jackson-dataformat-xml�
 
 ### @ExceptionHandler
 
-@ExceptionHandler可以用来统一处理方法抛出的异常
+@ExceptionHandler可以用来统一处理方法抛出的异常。举例：
+
+~~~java
+/**
+  * 处理不可控异常
+  * @param e
+  * @return
+  */
+@ExceptionHandler(Exception.class)
+@ResponseBody  //为了能够返回数据
+public R error(Exception e){
+    e.printStackTrace();
+    return R.error().message("执行了全局异常处理");
+}
+~~~
 
 ### @ControllerAdvice
 
-在Spring里，我们可以使用@ControllerAdvice来声明一些全局性的东西，最常见的是结合@ExceptionHandler注解用于全局异常的处理。
+在Spring里，我们可以使用@ControllerAdvice来声明一些**全局性的东西**，最常见的是结合@ExceptionHandler注解用于全局异常的处理。
 
 @ControllerAdvice是在类上声明的注解，其用法主要有三点：
 
 - @ExceptionHandler注解标注的方法：用于捕获Controller中抛出的不同类型的异常，从而达到异常全局处理的目的；
 - @InitBinder注解标注的方法：用于请求中注册自定义参数的解析，从而达到自定义请求参数格式的目的；
 - @ModelAttribute注解标注的方法：表示此方法会在执行目标Controller方法之前执行 。
+
+### @RestControllerAdvice
+
+@RestControllerAdvice是Spring框架中的一个注解，用于统一处理控制器异常和返回结果。它是@ControllerAdvice注解的特殊版本，用于处理RESTful风格的应用程序。
+
+当控制器中抛出异常时，@RestControllerAdvice注解所标注的类将会被自动调用，并根据异常类型和处理程序的注解来决定如何处理该异常。类似地，当控制器返回数据时，@RestControllerAdvice注解所标注的类也将会被调用，根据返回数据的类型和处理程序的注解来决定如何处理该数据。
+
+使用@RestControllerAdvice注解时，异常处理方法的返回值将自动转换为HTTP响应的主体。这意味着你可以在异常处理方法中定义全局的异常响应和返回结果处理程序，以保证在整个应用程序范围内统一处理异常和返回结果。
 
 ### @ImportResource
 
@@ -550,6 +546,58 @@ Spring Boot里面没有Spring的配置文件，我们自己编写的配置文件
 `@GetExchange` 注解是 Spring Framework 中的一个注解，用于指示一个方法应该处理 HTTP GET 请求，并且使用 Exchange 作为方法的参数类型。
 
 在 Spring WebFlux 中，请求和响应的处理是基于非阻塞的，使用 `ServerWebExchange` 接口来表示当前的 HTTP 请求-响应交互。`@GetExchange` 注解是 Spring WebFlux 提供的注解，用于将处理方法与特定的 HTTP GET 请求路径关联起来，并将请求处理逻辑封装在方法中。
+
+### @Cacheable
+
+@Cacheable可以标记在一个方法上，也可以标记在一个类上。当标记在一个方法上时表示该方法是支持缓存的，当标记在一个类上时则表示该类所有的方法都是支持缓存的。对于一个支持缓存的方法，Spring会在其被调用后将其返回值缓存起来，以保证下次利用同样的参数来执行该方法时可以直接从缓存中获取结果，而不需要再次执行该方法。Spring在缓存方法的返回值时是以键值对进行缓存的，值就是方法的返回结果，至于键的话，Spring又支持两种策略，默认策略和自定义策略，这个稍后会进行说明。需要注意的是当一个支持缓存的方法在对象内部被调用时是不会触发缓存功能的。@Cacheable可以指定三个属性，value、key和condition。
+
+### @JsonFormat
+
+日期格式化注解,来源于`jackson`
+
+## MyBatis有关注解
+
+#### @Select
+
+@Select注解的目的是为了取代xml中的select标签，只作用于方法上面。
+
+~~~mysql
+ @Select("select * from employee where id = #{id}")
+~~~
+
+## Lombok有关注解
+
+### @Data
+
+```
+@Data = @NoArgsConstructor + @Getter + @Setter + @EqualsAndHashCode
+注意：没有有参构造！！！！
+```
+
+> 只添加@Data注解时，查看class文件发现只有无参构造方法，添加@AllArgsConstructor和@NoArgsConstructor两个，才能同时有无参和带参构造方法
+
+### @Builder
+
+> builder这个方法是lombook的一个注解，大概就是不用new 对象可以直接这样通过链式编程来构建对象，提高的了的代码的可读性和减少代码量。
+
+Builder 使用创建者模式又叫建造者模式。简单来说，就是一步步创建一个对象，它对用户屏蔽了里面构建的细节，但却可以精细地控制对象的构造过程。
+
+`@Builder`注释为你的类生成相对略微复杂的构建器API。`@Builder`可以让你以下面显示的那样调用你的代码，来初始化你的实例对象：
+
+```java
+Student.builder()
+               .sno( "001" )
+               .sname( "admin" )
+               .sage( 18 )
+               .sphone( "110" )
+               .build();
+```
+
+`@Builder`可以放在类，构造函数或方法上。 虽然放在类上和放在构造函数上这两种模式是最常见的用例，但`@Builder`最容易用放在方法的用例来解释。
+
+### @EqualsAndHashCode
+
+这个注解的作用就是自动的给model bean实现equals方法和hashcode方法。
 
 ## Spring-Security有关注解
 
@@ -663,11 +711,12 @@ public class SpringRabbitListener {
 
 ## 博文
 
-### VO、DTO、DO、POJO、PO的区别和概念
+### VO(后端传给前端)、DTO(前端传给后端)、DO、POJO、PO的区别和概念
 
 * 概念：
   * **VO**（View Object）：**视图对象**，用于页面展示层，它的作用是把某个指定页面（或组件）的数据封装起来，**传输到前端页面**上。
   * **DTO**（Data Transfer Object）：**数据传输对象**，通常作为方法入参来使用。在此仅泛指用于**展示层**（如Controller）与**服务层**（如service/Impl）之间的数据传输对象。对其J2EE设计模式内的作用不做深入探讨。
+    * 当前端提交的数据和实体类中对应的属性差别较大时，建议使用DTO来封装数据。
   * **DO**（Domain Object）：**领域对象**（或称实体对象），就是从现实世界中抽象出来的有形或无形的业务实体。
   * **POJO**（Plain Ordinary Java Object）：简单的Java对象，实际就是**普通JavaBeans**，是为了避免和EJB混淆所创造的简称，它不包含业务逻辑或持久逻辑等。POJO对象有时也被称为Data对象，大量应用于表现现实中的对象。**一个POJO持久化以后就是PO**。
   * **PO**（Persistent Object）：**持久化对象**，通常与持久层（DAO，通常是关系型数据库）的数据结构形成一一对应的映射关系。
