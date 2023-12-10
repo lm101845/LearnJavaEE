@@ -1,9 +1,21 @@
-视频链接：
+学这个之前需要先看前置课程，需要学习一下Docker部署一下前后端项目之后才能继续学这个，
+Docker部署视频链接：
+https://www.bilibili.com/video/BV1HP4118797?p=1
+
+
+本课程视频链接：
 https://www.bilibili.com/video/BV1kH4y1S7wz?p=1
 
 
 资料：
 https://pan.baidu.com/s/1Eb9EQbcPMBlbGZHurp5Vtg&pwd=9988
+
+
+最新笔记资料请访问：
+飞书链接：https://b11et3un53m.feishu.cn/wiki/MWQIw4Zvhil0I5ktPHwcoqZdnec?from=from_copylink   
+密码：j.N?-+4[
+
+
 
 视频时长11小时，共52集。
 
@@ -15,4 +27,13 @@ https://pan.baidu.com/s/1Eb9EQbcPMBlbGZHurp5Vtg&pwd=9988
 
 我去，我发现这个项目好像没法看下去啊，他是对之前做的黑马商城项目改成微服务，但是这个项目我网上找不到有关资料啊。
 
-我再看看到时候要怎么办吧。
+
+——最终结果：我把老师的Docker课程看完了，顺利部署完前后端项目，接下来可以继续学习SpringCloud了。
+
+——额，我点击立即购买，控制台报错，修改了一下前端代码，也还是继续报错，页面都不展示。。。
+
+——我点击加入购物车，发现页面又正常了。。。点击立即购买，发现页面也正常了。。。真神奇。。。
+
+——终于可以正常往下继续执行了，太难了。。。
+
+第6-10集看完——23-12-10

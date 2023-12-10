@@ -1,0 +1,4 @@
+hm:
+  db:
+    host: mysql   #这个是docker中mysql的容器名
+    pw: 123
