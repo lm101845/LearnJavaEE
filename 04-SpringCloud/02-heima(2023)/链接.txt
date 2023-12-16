@@ -15,7 +15,10 @@ https://pan.baidu.com/s/1Eb9EQbcPMBlbGZHurp5Vtg&pwd=9988
 飞书链接：https://b11et3un53m.feishu.cn/wiki/MWQIw4Zvhil0I5ktPHwcoqZdnec?from=from_copylink   
 密码：j.N?-+4[
 
+192.168.88.104:10080
 
+http://localhost:8081/doc.html#/home
+http://localhost:8082/doc.html#/home
 
 视频时长11小时，共52集。
 
@@ -37,3 +40,8 @@ https://pan.baidu.com/s/1Eb9EQbcPMBlbGZHurp5Vtg&pwd=9988
 ——终于可以正常往下继续执行了，太难了。。。
 
 第6-10集看完——23-12-10
+第11-12集看完——23-12-11
+第13集看完——23-12-12
+第14-15集看完——23-12-13
+第16-20集看完——23-12-16
+——可恶啊，又出现问题了，连不上MySQL了，也不知道怎么解决：docker容器部署了Mysql和nacos，navicat可以正常连上mysql，nacos也可以正常登录，但是执行代码的时候，提示Could not create connection to database server

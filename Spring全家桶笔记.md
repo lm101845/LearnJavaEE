@@ -410,7 +410,7 @@ URL 中的 {xxx} 占位符可以通过@PathVariable(“xxx”) 绑定到操作�
   null。
 
 * defaultValue：不管required属性值为true或false，当value所指定的请求参数没有传输或传输的值
-  为""时，则使用默认值为形参赋值
+  为""时，则使用默认值为形参赋值。
 
 ### @RequestHeader
 
@@ -647,6 +647,13 @@ Student.builder()
 ### @EqualsAndHashCode
 
 这个注解的作用就是自动的给model bean实现equals方法和hashcode方法。
+
+### @RequiredArgsConstructor
+
+在springboot项目中，controller或service层中需要注入多个mapper接口或者另外的service接口，这时候代码中就会有多个@AutoWired注解，使得代码看起来很混乱。
+lombok提供了一个注解：
+`@RequiredArgsConstructor(onConstructor =@_(@Autowired))`
+写在类上面可以代替@AutoWired注解，需要注意的是：在注入的时候需要用final定义，或者使用@notnull注解。
 
 ## Spring-Security有关注解
 
